@@ -103,7 +103,6 @@ public class ElevatorService {
         }
     }
 
-
     private void stopExecutors() {
         logger.info("{} executor services stopping...", NAME);
         try {

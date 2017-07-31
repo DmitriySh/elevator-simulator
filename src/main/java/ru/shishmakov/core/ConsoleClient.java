@@ -20,7 +20,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.commons.lang3.StringUtils.*;
 
 /**
@@ -42,29 +41,26 @@ public class ConsoleClient {
     private final AtomicBoolean watcherState = new AtomicBoolean(true);
 
     protected void start() {
-        logger.info("{} {}:{} starting...", NAME, ownerName, ownerNumber);
+        logger.info("{} starting...", NAME);
         try {
             startClientService();
-            notifyStarted();
-            logger.info("{} {}:{} started", NAME, ownerName, ownerNumber);
+            logger.info("{} started", NAME);
         } catch (Throwable e) {
-            notifyFailed(e);
+            logger.error("{} start failed", NAME, e);
         }
     }
 
     protected void stop() {
-        logger.info("{} {}:{} stopping...", NAME, ownerName, ownerNumber);
+        logger.info("{} stopping...", NAME);
         try {
             stopClientService();
-            notifyStopped();
-            logger.info("{} {}:{} stopped", NAME, ownerName, ownerNumber);
+            logger.info("{} stopped", NAME);
         } catch (Throwable e) {
-            notifyFailed(e);
+            logger.error("{} stop failed", NAME, e);
         }
     }
 
     private void startClientService() throws TimeoutException {
-        hzService.awaitRunning(hzConfig.clientInitialWaitTimeoutSec(), SECONDS);
         executor.execute(this::process);
     }
 
@@ -73,8 +69,8 @@ public class ConsoleClient {
     }
 
     private void process() {
-        logger.info("{} {}:{} listening user typing...", NAME, ownerName, ownerNumber);
-        ucLogger.info("{}: {} get ready, choose command... (/h - help)", NAME, ownerName);
+        logger.info("{} listening user typing...", NAME);
+        ucLogger.info("{} get ready, choose command... (/h - help)", NAME);
         try (BufferedReader input = new BufferedReader(new InputStreamReader(System.in))) {
             while (watcherState.get() && !Thread.currentThread().isInterrupted()) {
                 final String read = input.readLine();
@@ -86,7 +82,7 @@ public class ConsoleClient {
                 final String cmd = it.next();
                 if (isBlank(cmd)) continue;
 
-                logger.debug("{} {}:{} user typed: {}", NAME, ownerName, ownerNumber, cmd);
+                logger.debug("{} user typed: {}", NAME, cmd);
 
                 if (equalsIgnoreCase(cmd, "/h") || equalsIgnoreCase(cmd, "/help")) {
                     ucLogger.info(String.format("\t%s - %s%n\t%s%n", "h", "help", "You see current message"));
@@ -128,15 +124,15 @@ public class ConsoleClient {
                                 : hzObjects.getSecondLevelMap();
                         map.set(task.getOrderId(), task);
                         ucLogger.info("Send task successfully!\n");
-                        logger.debug("{} {}:{} send task: {}", NAME, ownerName, ownerNumber, task);
+                        logger.debug("{} send task: {}", NAME, task);
                     } catch (Exception e) {
-                        logger.error("{} {}:{} error in time to send the task", NAME, ownerName, ownerNumber, e);
+                        logger.error("{} error in time to send the task", NAME, e);
                         ucLogger.info("Fail send task!\n");
                     }
                 }
             }
         } catch (Exception e) {
-            logger.error("{} {}:{} error in time of processing", NAME, ownerName, ownerNumber, e);
+            logger.error("{} error in time of processing", NAME, e);
         } finally {
             shutdownClient();
         }
@@ -144,7 +140,7 @@ public class ConsoleClient {
 
     private void shutdownClient() {
         if (watcherState.compareAndSet(true, false)) {
-            logger.debug("{} {}:{} waiting for shutdown the client...", NAME, ownerName, ownerNumber);
+            logger.debug("{} waiting for shutdown the client...", NAME,
         }
 
     }
