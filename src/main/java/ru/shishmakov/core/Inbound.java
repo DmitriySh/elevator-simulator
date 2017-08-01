@@ -1,5 +1,6 @@
 package ru.shishmakov.core;
 
+import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.google.common.collect.Range;
 
@@ -23,7 +24,13 @@ public class Inbound {
     @Parameter(names = {"-d"}, description = "Duration of time between the opening and closing elevator door", required = true)
     public int duration;
 
-    public Inbound validate() {
+    public static Inbound buildInbound(String[] args) {
+        Inbound inbound = new Inbound();
+        JCommander.newBuilder().addObject(inbound).build().parse(args);
+        return inbound.validate();
+    }
+
+    private Inbound validate() {
         checkArgument(Range.range(5, CLOSED, 21, OPEN).contains(number), "Number of floors: %s should be in range [5..21)", number);
         checkArgument(Range.range(1, CLOSED, 21, OPEN).contains(height), "Height of floor: %s should be in range [1..21) m", height);
         checkArgument(Range.range(1, CLOSED, 11, OPEN).contains(velocity), "Velocity of elevator: %s should be in range [1..11) m/s", velocity);
