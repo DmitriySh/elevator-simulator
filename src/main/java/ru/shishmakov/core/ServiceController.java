@@ -12,7 +12,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -25,19 +24,18 @@ import static ru.shishmakov.util.Threads.*;
  * @author Dmitriy Shishmakov on 31.07.17
  */
 @Singleton
-public class ElevatorService {
+public class ServiceController {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
 
     private static final String NAME = MethodHandles.lookup().lookupClass().getSimpleName();
-    private static final AtomicReference<LifeCycle> CLIENT_STATE = new AtomicReference<>(IDLE);
-    private static final CountDownLatch awaitStart = new CountDownLatch(1);
+    private static final AtomicReference<LifeCycle> SERVICE_STATE = new AtomicReference<>(IDLE);
 
     @Inject
     @Named("elevator.executor")
     private ExecutorService executor;
     @Inject
-    private ConsoleClient consoleClient;
+    private ConsoleService consoleService;
 
     @PostConstruct
     public void setUp() {
@@ -49,63 +47,55 @@ public class ElevatorService {
         logger.info("----- // -----    {} STOP {}    ----- // -----\nBuy!", NAME, LocalDateTime.now());
     }
 
-    public ElevatorService startAsync() {
-        executor.execute(this::start);
-        return this;
-    }
-
-    public ElevatorService start() {
+    public ServiceController start() {
         logger.info("{} starting...", NAME);
-        Thread.currentThread().setName("service-elevator");
+        Thread.currentThread().setName("service-main");
 
-        final LifeCycle state = CLIENT_STATE.get();
+        final LifeCycle state = SERVICE_STATE.get();
         if (LifeCycle.isNotIdle(state)) {
             logger.warn("Warning! {} already started, state: {}", NAME, state);
             return this;
         }
-        CLIENT_STATE.set(INIT);
-        awaitStart.countDown();
-        consoleClient.start();
-        assignThreadHook(this::stop, "elevator-service-hook-thread");
+        SERVICE_STATE.set(INIT);
+        consoleService.start();
+        assignThreadHook(this::stop, "service-main-hook-thread");
 
-        CLIENT_STATE.set(RUN);
-        logger.info("{} started, state: {}", NAME, CLIENT_STATE.get());
+        SERVICE_STATE.set(RUN);
+        logger.info("{} started, state: {}", NAME, SERVICE_STATE.get());
         return this;
     }
 
     public void stop() {
         logger.info("{} stopping...", NAME);
-        final LifeCycle state = CLIENT_STATE.get();
+        final LifeCycle state = SERVICE_STATE.get();
         if (LifeCycle.isNotRun(state)) {
             logger.warn("Warning! {} already stopped, state: {}", NAME, state);
             return;
         }
 
         try {
-            CLIENT_STATE.set(STOPPING);
-            consoleClient.stop();
+            SERVICE_STATE.set(STOPPING);
+            consoleService.stop();
             stopExecutors();
         } finally {
-            CLIENT_STATE.set(IDLE);
-            logger.info("{} stopped, state: {}", NAME, CLIENT_STATE.get());
+            SERVICE_STATE.set(IDLE);
+            logger.info("{} stopped, state: {}", NAME, SERVICE_STATE.get());
         }
     }
 
     public void await() throws InterruptedException {
-        awaitStart.await();
-        Thread.currentThread().setName("service-main");
         fileLogger.info("{} thread: {} await the state: {} to stop itself", NAME, Thread.currentThread(), IDLE);
-        for (long count = 0; LifeCycle.isNotIdle(CLIENT_STATE.get()); count++) {
+        for (long count = 0; LifeCycle.isNotIdle(SERVICE_STATE.get()); count++) {
             if (count % 100 == 0) fileLogger.debug("Thread: {} is alive", Thread.currentThread());
             sleepWithoutInterruptedAfterTimeout(100, MILLISECONDS);
         }
     }
 
     private void stopExecutors() {
-        logger.info("{} executor services stopping...", NAME);
+        logger.info("Executor service stopping...", NAME);
         try {
             MoreExecutors.shutdownAndAwaitTermination(executor, STOP_TIMEOUT_SEC, SECONDS);
-            logger.info("Executor services stopped");
+            logger.info("Executor service stopped");
         } catch (Exception e) {
             logger.error("{} exception occurred during stopping executor services", NAME, e);
         }

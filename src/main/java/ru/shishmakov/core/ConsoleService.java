@@ -19,7 +19,7 @@ import static org.apache.commons.lang3.StringUtils.*;
 /**
  * @author Dmitriy Shishmakov on 31.07.17
  */
-public class ConsoleClient {
+public class ConsoleService {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
 
@@ -30,7 +30,7 @@ public class ConsoleClient {
     //    @Inject
 //    private TimeConfig timeConfig;
     @Inject
-    private Provider<ElevatorService> service;
+    private Provider<ServiceController> service;
 
     private final AtomicBoolean watcherState = new AtomicBoolean(true);
 
@@ -118,7 +118,7 @@ public class ConsoleClient {
 
     private void shutdownClient() {
         if (watcherState.compareAndSet(true, false)) {
-            logger.debug("{} waiting for shutdown the client...", NAME);
+            logger.debug("{} waiting for shutdown...", NAME);
         }
     }
 }
