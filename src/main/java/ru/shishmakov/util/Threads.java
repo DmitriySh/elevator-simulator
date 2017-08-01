@@ -1,4 +1,4 @@
-package ru.shishmakov.concurrent;
+package ru.shishmakov.util;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
 public final class Threads {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public static final long STOP_TIMEOUT_SEC = 10;
+    public static final long STOP_TIMEOUT_SEC = 3;
 
     /**
      * Modified version of the method {@link Uninterruptibles#sleepUninterruptibly(long, TimeUnit)}
@@ -56,7 +56,7 @@ public final class Threads {
 
     public static void assignThreadHook(Runnable task, String name) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            logger.debug("Thread: {} was interrupted by hook", Thread.currentThread());
+            logger.debug("{} was interrupted by hook", Thread.currentThread());
             task.run();
         }, name));
     }

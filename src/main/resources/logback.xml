@@ -33,13 +33,15 @@
 
     <logger name="ru.shishmakov" level="debug" additivity="false">
         <appender-ref ref="FILE"/>
-    </logger>
-
-    <logger name="userConsole" level="info" additivity="false">
         <appender-ref ref="USER_STDOUT"/>
     </logger>
 
+    <logger name="fileLogger" level="debug" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
     <root level="error">
+        <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

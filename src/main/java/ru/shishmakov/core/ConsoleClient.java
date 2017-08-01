@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.StringUtils.*;
  */
 public class ConsoleClient {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final Logger ucLogger = LoggerFactory.getLogger("userConsole");
+    private static final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
 
     private static final String NAME = MethodHandles.lookup().lookupClass().getSimpleName();
     @Inject
@@ -63,8 +63,7 @@ public class ConsoleClient {
     }
 
     private void process() {
-        logger.info("{} listening user typing...", NAME);
-        ucLogger.info("{} get ready, choose command... (/h - help)", NAME);
+        logger.info("{} get ready, choose command: (/h - help)", NAME);
         try (BufferedReader input = new BufferedReader(new InputStreamReader(System.in))) {
             while (watcherState.get() && !Thread.currentThread().isInterrupted()) {
                 final String read = input.readLine();
@@ -76,7 +75,7 @@ public class ConsoleClient {
                 final String cmd = trim(lowerCase(it.next()));
                 if (isBlank(cmd)) continue;
 
-                logger.debug("{} user typed: {}", NAME, cmd);
+                fileLogger.debug("{} user typed: {}", NAME, cmd);
                 switch (cmd) {
                     case "/h":
                     case "/help":
@@ -89,12 +88,12 @@ public class ConsoleClient {
                     case "/b":
                     case "/button":
                         // todo
-                        ucLogger.info("Nothing todo");
+                        logger.info("Nothing todo");
                         continue;
                     case "/e":
                     case "/elevator":
                         // todo
-                        ucLogger.info("Nothing todo");
+                        logger.info("Nothing todo");
                         continue;
                 }
             }
@@ -106,15 +105,15 @@ public class ConsoleClient {
     }
 
     private static void printHelp() {
-        ucLogger.info(String.format("\t%s - %s%n\t%s%n", "h", "help", "You see current message"));
-        ucLogger.info(String.format("\t%s - %s%n\t%s%n", "b",
+        logger.info(String.format("\t%s - %s%n\t%s%n", "h", "help", "You see current message"));
+        logger.info(String.format("\t%s - %s%n\t%s%n", "b",
                 "button <number>",
                 "Press the button to select the floor"));
-        ucLogger.info(String.format("\t%s - %s%n\t%s%n", "e",
+        logger.info(String.format("\t%s - %s%n\t%s%n", "e",
                 "elevator",
                 "Invoke the elevator on the 1st floor (main lobby)"));
-        ucLogger.info(String.format("\t%s - %s%n\t%s%n", "q", "quit", "End session and quit"));
-        ucLogger.info("Start your command with slash symbol '/'\nAuthor: Dmitriy Shishmakov\n");
+        logger.info(String.format("\t%s - %s%n\t%s%n", "q", "quit", "End session and quit"));
+        logger.info("Start your command with slash symbol '/'\nAuthor: Dmitriy Shishmakov\n");
     }
 
     private void shutdownClient() {

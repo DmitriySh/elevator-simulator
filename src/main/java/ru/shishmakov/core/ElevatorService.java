@@ -3,7 +3,7 @@ package ru.shishmakov.core;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.shishmakov.concurrent.LifeCycle;
+import ru.shishmakov.util.LifeCycle;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -18,8 +18,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static ru.shishmakov.concurrent.LifeCycle.*;
-import static ru.shishmakov.concurrent.Threads.*;
+import static ru.shishmakov.util.LifeCycle.*;
+import static ru.shishmakov.util.Threads.*;
 
 /**
  * @author Dmitriy Shishmakov on 31.07.17
@@ -27,7 +27,7 @@ import static ru.shishmakov.concurrent.Threads.*;
 @Singleton
 public class ElevatorService {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final Logger ucLogger = LoggerFactory.getLogger("userConsole");
+    private static final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
 
     private static final String NAME = MethodHandles.lookup().lookupClass().getSimpleName();
     private static final AtomicReference<LifeCycle> CLIENT_STATE = new AtomicReference<>(IDLE);
@@ -42,13 +42,11 @@ public class ElevatorService {
     @PostConstruct
     public void setUp() {
         logger.info("----- // -----    {} START {}    ----- // -----", NAME, LocalDateTime.now());
-        ucLogger.info("{} START {}", NAME, LocalDateTime.now());
     }
 
     @PreDestroy
     public void tearDown() {
-        logger.info("----- // -----    {} STOP {}    ----- // -----", NAME, LocalDateTime.now());
-        ucLogger.info("{} STOP {}\nBuy!", NAME, LocalDateTime.now());
+        logger.info("----- // -----    {} STOP {}    ----- // -----\nBuy!", NAME, LocalDateTime.now());
     }
 
     public ElevatorService startAsync() {
@@ -90,16 +88,15 @@ public class ElevatorService {
         } finally {
             CLIENT_STATE.set(IDLE);
             logger.info("{} stopped, state: {}", NAME, CLIENT_STATE.get());
-            ucLogger.info("{} stopped, state: {}", NAME, CLIENT_STATE.get());
         }
     }
 
     public void await() throws InterruptedException {
         awaitStart.await();
         Thread.currentThread().setName("service-main");
-        logger.info("{} thread: {} await the state: {} to stop itself", NAME, Thread.currentThread(), IDLE);
+        fileLogger.info("{} thread: {} await the state: {} to stop itself", NAME, Thread.currentThread(), IDLE);
         for (long count = 0; LifeCycle.isNotIdle(CLIENT_STATE.get()); count++) {
-            if (count % 100 == 0) logger.debug("Thread: {} is alive", Thread.currentThread());
+            if (count % 100 == 0) fileLogger.debug("Thread: {} is alive", Thread.currentThread());
             sleepWithoutInterruptedAfterTimeout(100, MILLISECONDS);
         }
     }

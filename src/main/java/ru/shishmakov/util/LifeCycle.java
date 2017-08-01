@@ -1,4 +1,4 @@
-package ru.shishmakov.concurrent;
+package ru.shishmakov.util;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
