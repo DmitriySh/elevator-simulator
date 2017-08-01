@@ -3,7 +3,7 @@ package ru.shishmakov.core;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.shishmakov.concurrent.LifeCycle;
+import ru.shishmakov.util.LifeCycle;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -18,8 +18,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static ru.shishmakov.concurrent.LifeCycle.*;
-import static ru.shishmakov.concurrent.Threads.*;
+import static ru.shishmakov.util.LifeCycle.*;
+import static ru.shishmakov.util.Threads.*;
 
 /**
  * @author Dmitriy Shishmakov on 31.07.17
