@@ -34,7 +34,7 @@ public class ElevatorService {
     private static final CountDownLatch awaitStart = new CountDownLatch(1);
 
     @Inject
-    @Named("client.executor")
+    @Named("elevator.executor")
     private ExecutorService executor;
     @Inject
     private ConsoleClient consoleClient;
@@ -52,12 +52,13 @@ public class ElevatorService {
     }
 
     public ElevatorService startAsync() {
-        new Thread(this::start, "elevator-service").start();
+        executor.execute(this::start);
         return this;
     }
 
     public ElevatorService start() {
         logger.info("{} starting...", NAME);
+        Thread.currentThread().setName("service-elevator");
 
         final LifeCycle state = CLIENT_STATE.get();
         if (LifeCycle.isNotIdle(state)) {

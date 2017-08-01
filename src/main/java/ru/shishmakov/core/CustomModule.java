@@ -19,10 +19,8 @@ public class CustomModule extends AbstractModule {
 
     @Provides
     @Singleton
-    @Named("client.executor")
+    @Named("elevator.executor")
     public ExecutorService starterExecutor() {
-        return ThreadPoolBuilder.pool("client.executor")
-                .withThreads(1)
-                .build();
+        return ThreadPoolBuilder.pool("elevator.executor").build();
     }
 }

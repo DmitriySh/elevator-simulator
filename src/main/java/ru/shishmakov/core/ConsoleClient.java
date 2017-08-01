@@ -11,15 +11,10 @@ import javax.inject.Provider;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static org.apache.commons.lang3.StringUtils.*;
 
 /**
@@ -31,19 +26,19 @@ public class ConsoleClient {
 
     private static final String NAME = MethodHandles.lookup().lookupClass().getSimpleName();
     @Inject
-    @Named("client.executor")
+    @Named("elevator.executor")
     private ExecutorService executor;
     @Inject
     private TimeConfig timeConfig;
     @Inject
-    private Provider<ElevatorService> client;
+    private Provider<ElevatorService> service;
 
     private final AtomicBoolean watcherState = new AtomicBoolean(true);
 
     protected void start() {
         logger.info("{} starting...", NAME);
         try {
-            startClientService();
+            startConsole();
             logger.info("{} started", NAME);
         } catch (Throwable e) {
             logger.error("{} start failed", NAME, e);
@@ -53,18 +48,18 @@ public class ConsoleClient {
     protected void stop() {
         logger.info("{} stopping...", NAME);
         try {
-            stopClientService();
+            stopConsole();
             logger.info("{} stopped", NAME);
         } catch (Throwable e) {
             logger.error("{} stop failed", NAME, e);
         }
     }
 
-    private void startClientService() throws TimeoutException {
+    private void startConsole() {
         executor.execute(this::process);
     }
 
-    private void stopClientService() {
+    private void stopConsole() {
         shutdownClient();
     }
 
@@ -79,56 +74,29 @@ public class ConsoleClient {
                 final Iterator<String> it = Splitter.on(' ').split(read).iterator();
                 if (!it.hasNext()) continue;
 
-                final String cmd = it.next();
+                final String cmd = trim(lowerCase(it.next()));
                 if (isBlank(cmd)) continue;
 
                 logger.debug("{} user typed: {}", NAME, cmd);
-
-                if (equalsIgnoreCase(cmd, "/h") || equalsIgnoreCase(cmd, "/help")) {
-                    ucLogger.info(String.format("\t%s - %s%n\t%s%n", "h", "help", "You see current message"));
-                    ucLogger.info(String.format("\t%s - %s%n\t%s%n", "s",
-                            "send <local_date_time_pattern>:<yyyy-MM-ddTHH:mm> <message>:<string>",
-                            "You send the text message at the scheduled time to execute on Hazelcast node"));
-                    ucLogger.info(String.format("\t%s - %s%n\t%s%n", "q", "quit", "End session and quit"));
-                    ucLogger.info(String.format("\t%s - %s%n\t%s%n", "t", "utc", "Get current Hazelcast cluster time in UTC"));
-                    ucLogger.info("Start your command with slash symbol '/'\nAuthor: Dmitriy Shishmakov\n");
-                    continue;
-                }
-
-                if (equalsIgnoreCase(cmd, "/q") || equalsIgnoreCase(cmd, "/quit")) {
-                    client.get().stop();
-                    break;
-                }
-
-                if (equalsIgnoreCase(cmd, "/t") || equalsIgnoreCase(cmd, "/utc")) {
-                    final long clusterTime = hzObjects.getClusterTime();
-                    ucLogger.info("Cluster time: {}\n",
-                            LocalDateTime.ofInstant(Instant.ofEpochMilli(clusterTime), ZoneId.of("UTC")));
-                    continue;
-                }
-
-                if (equalsIgnoreCase(cmd, "/s") || equalsIgnoreCase(cmd, "/send")) {
-                    final String time = it.hasNext() ? it.next() : EMPTY;
-                    final String message = it.hasNext() ? it.next() : EMPTY;
-                    if (isBlank(time) || isBlank(message)) {
-                        ucLogger.info("Could not parse your typing. Please try again...\n");
+                switch (cmd) {
+                    case "/h":
+                    case "/help":
+                        printHelp();
                         continue;
-                    }
-                    try {
-                        final LocalDateTime localDateTime = LocalDateTime.parse(time, ISO_LOCAL_DATE_TIME);
-                        final long timeStamp = timeConfig.hotTaskUpperBoundMs() + hzObjects.getClusterTime();
-                        final TimeTask task = new TimeTask(hzObjects.getTaskIdGenerator().newId(),
-                                localDateTime, new MessageTask(message, localDateTime));
-                        final IMap<Long, TimeTask> map = timeStamp >= task.getScheduledTime()
-                                ? hzObjects.getFirstLevelMap()
-                                : hzObjects.getSecondLevelMap();
-                        map.set(task.getOrderId(), task);
-                        ucLogger.info("Send task successfully!\n");
-                        logger.debug("{} send task: {}", NAME, task);
-                    } catch (Exception e) {
-                        logger.error("{} error in time to send the task", NAME, e);
-                        ucLogger.info("Fail send task!\n");
-                    }
+                    case "/q":
+                    case "/quit":
+                        service.get().stop();
+                        break;
+                    case "/b":
+                    case "/button":
+                        // todo
+                        ucLogger.info("Nothing todo");
+                        continue;
+                    case "/e":
+                    case "/elevator":
+                        // todo
+                        ucLogger.info("Nothing todo");
+                        continue;
                 }
             }
         } catch (Exception e) {
@@ -138,10 +106,21 @@ public class ConsoleClient {
         }
     }
 
+    private static void printHelp() {
+        ucLogger.info(String.format("\t%s - %s%n\t%s%n", "h", "help", "You see current message"));
+        ucLogger.info(String.format("\t%s - %s%n\t%s%n", "b",
+                "button <number>",
+                "Press the button to select the floor"));
+        ucLogger.info(String.format("\t%s - %s%n\t%s%n", "e",
+                "elevator",
+                "Invoke the elevator on the 1st floor (main lobby)"));
+        ucLogger.info(String.format("\t%s - %s%n\t%s%n", "q", "quit", "End session and quit"));
+        ucLogger.info("Start your command with slash symbol '/'\nAuthor: Dmitriy Shishmakov\n");
+    }
+
     private void shutdownClient() {
         if (watcherState.compareAndSet(true, false)) {
-            logger.debug("{} waiting for shutdown the client...", NAME,
+            logger.debug("{} waiting for shutdown the client...", NAME);
         }
-
     }
 }
