@@ -3,7 +3,6 @@ package ru.shishmakov.core;
 import com.google.common.base.Splitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.shishmakov.config.TimeConfig;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -28,8 +27,8 @@ public class ConsoleClient {
     @Inject
     @Named("elevator.executor")
     private ExecutorService executor;
-    @Inject
-    private TimeConfig timeConfig;
+    //    @Inject
+//    private TimeConfig timeConfig;
     @Inject
     private Provider<ElevatorService> service;
 
