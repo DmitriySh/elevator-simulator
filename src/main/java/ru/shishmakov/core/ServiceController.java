@@ -92,7 +92,7 @@ public class ServiceController {
     }
 
     private void stopExecutors() {
-        logger.info("Executor service stopping...", NAME);
+        logger.info("Executor service stopping...");
         try {
             MoreExecutors.shutdownAndAwaitTermination(executor, STOP_TIMEOUT_SEC, SECONDS);
             logger.info("Executor service stopped");

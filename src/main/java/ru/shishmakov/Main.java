@@ -21,6 +21,6 @@ public class Main {
     private static Inbound parseInboundParameters(String[] args) {
         Inbound inbound = new Inbound();
         JCommander.newBuilder().addObject(inbound).build().parse(args);
-        return inbound;
+        return inbound.validate();
     }
 }
