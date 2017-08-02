@@ -1,10 +1,12 @@
 package ru.shishmakov.util;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
@@ -59,5 +61,12 @@ public final class Threads {
             logger.debug("{} was interrupted by hook", Thread.currentThread());
             task.run();
         }, name));
+    }
+
+    public static ThreadFactory buildThreadFactory(String name) {
+        ThreadFactoryBuilder factory = new ThreadFactoryBuilder();
+        factory.setNameFormat(name + "-%d");
+        factory.setUncaughtExceptionHandler((t, e) -> logger.warn("thread pool: " + name + " has unhandled exception", e));
+        return factory.build();
     }
 }
