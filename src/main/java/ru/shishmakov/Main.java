@@ -1,10 +1,8 @@
 package ru.shishmakov;
 
 import com.google.inject.Guice;
-import ru.shishmakov.core.CustomModule;
+import ru.shishmakov.core.GuiceModule;
 import ru.shishmakov.core.ServiceController;
-
-import static ru.shishmakov.core.Inbound.buildInbound;
 
 /**
  * @author Dmitriy Shishmakov on 31.07.17
@@ -12,9 +10,8 @@ import static ru.shishmakov.core.Inbound.buildInbound;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-        Guice.createInjector(new CustomModule())
+        Guice.createInjector(new GuiceModule(args))
                 .getInstance(ServiceController.class)
-                .start(buildInbound(args))
-                .await();
+                .start().await();
     }
 }

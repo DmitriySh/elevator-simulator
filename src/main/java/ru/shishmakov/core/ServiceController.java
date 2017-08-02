@@ -36,6 +36,8 @@ public class ServiceController {
     private ExecutorService executor;
     @Inject
     private ConsoleService consoleService;
+    @Inject
+    private ElevatorService elevatorService;
 
     @PostConstruct
     public void setUp() {
@@ -47,7 +49,7 @@ public class ServiceController {
         logger.info("----- // -----    {} STOP {}    ----- // -----\nBuy!", NAME, LocalDateTime.now());
     }
 
-    public ServiceController start(Inbound inbound) {
+    public ServiceController start() {
         logger.info("{} starting...", NAME);
         Thread.currentThread().setName("service-main");
 
@@ -58,6 +60,7 @@ public class ServiceController {
         }
         SERVICE_STATE.set(INIT);
         consoleService.start();
+        elevatorService.start();
         assignThreadHook(this::stop, "service-main-hook-thread");
 
         SERVICE_STATE.set(RUN);
@@ -76,6 +79,7 @@ public class ServiceController {
         try {
             SERVICE_STATE.set(STOPPING);
             consoleService.stop();
+            elevatorService.stop();
             stopExecutors();
         } finally {
             SERVICE_STATE.set(IDLE);

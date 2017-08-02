@@ -1,6 +1,7 @@
 package ru.shishmakov.core;
 
 import com.google.common.base.Splitter;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import static org.apache.commons.lang3.StringUtils.*;
 /**
  * @author Dmitriy Shishmakov on 31.07.17
  */
+@Singleton
 public class ConsoleService {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
@@ -27,8 +29,6 @@ public class ConsoleService {
     @Inject
     @Named("elevator.executor")
     private ExecutorService executor;
-    //    @Inject
-//    private TimeConfig timeConfig;
     @Inject
     private Provider<ServiceController> service;
 
@@ -59,7 +59,7 @@ public class ConsoleService {
     }
 
     private void stopConsole() {
-        shutdownClient();
+        shutdownConsole();
     }
 
     private void process() {
@@ -100,7 +100,7 @@ public class ConsoleService {
         } catch (Exception e) {
             logger.error("{} error in time of processing", NAME, e);
         } finally {
-            shutdownClient();
+            shutdownConsole();
         }
     }
 
@@ -116,7 +116,7 @@ public class ConsoleService {
         logger.info("Start your command with slash symbol '/'\nAuthor: Dmitriy Shishmakov\n");
     }
 
-    private void shutdownClient() {
+    private void shutdownConsole() {
         if (watcherState.compareAndSet(true, false)) {
             logger.debug("{} waiting for shutdown...", NAME);
         }
