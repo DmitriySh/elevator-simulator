@@ -28,7 +28,7 @@ public class ElevatorService {
     private final AtomicBoolean watcherState = new AtomicBoolean(true);
     private ElevatorState state = IDLE;
     private Command command = BLANK;
-    private int currentFloor, goalFloor = 1;
+    private int startFloor, pastFloor, goalFloor = 1;
 
     @Inject
     @Named("elevator.executor")

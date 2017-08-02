@@ -7,6 +7,7 @@ public enum ElevatorState {
     IDLE,
     MOVE_UP,
     MOVE_DOWN,
+    MOVE_STOP,
     STOP_CLOSE,
     STOP_OPEN
 }
