@@ -21,7 +21,7 @@ public final class Threads {
 
     /**
      * Modified version of the method {@link Uninterruptibles#sleepUninterruptibly(long, TimeUnit)}
-     * suppresses {@link InterruptedException} occurred in time of timeout
+     * suppresses {@link InterruptedException} occurred at the time of timeout
      */
     public static void sleepWithoutInterruptedAfterTimeout(long timeout, TimeUnit unit) {
         long remainingNanos = unit.toNanos(timeout);
@@ -46,7 +46,7 @@ public final class Threads {
     }
 
     /**
-     * The thread could interrupted in time of timeout
+     * The thread could interrupted at the time of timeout
      */
     public static void sleepInterrupted(long timeout, TimeUnit unit) {
         try {

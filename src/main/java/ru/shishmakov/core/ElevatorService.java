@@ -3,6 +3,7 @@ package ru.shishmakov.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.shishmakov.util.ElevatorState;
+import ru.shishmakov.util.QueueUtils;
 import ru.shishmakov.util.Threads;
 
 import javax.inject.Inject;
@@ -14,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static ru.shishmakov.core.Command.BLANK;
 import static ru.shishmakov.util.ElevatorState.IDLE;
 
 @Singleton
@@ -25,6 +27,7 @@ public class ElevatorService {
 
     private final AtomicBoolean watcherState = new AtomicBoolean(true);
     private ElevatorState state = IDLE;
+    private Command command = BLANK;
     private int currentFloor, goalFloor = 1;
 
     @Inject
@@ -32,7 +35,7 @@ public class ElevatorService {
     private ExecutorService executor;
     @Inject
     @Named("elevator.commands")
-    private BlockingQueue<Command> elevatorCommands;
+    private BlockingQueue<Command> commands;
     @Inject
     @Named("elevator.inbound")
     private Inbound inbound;
@@ -67,8 +70,10 @@ public class ElevatorService {
 
     private void process() {
         while (watcherState.get() && !Thread.currentThread().isInterrupted()) {
-
-            Threads.sleepWithInterruptedAfterTimeout(100, MILLISECONDS);
+            Threads.sleepWithInterruptedAfterTimeout(500, MILLISECONDS);
+//            logger.debug("commands: {}", commands);
+            if (commands.isEmpty()) continue;
+            QueueUtils.poll(commands).ifPresent(c -> logger.info("command: {}", c.getDescription()));
         }
     }
 

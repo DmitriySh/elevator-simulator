@@ -2,8 +2,10 @@ package ru.shishmakov.core;
 
 import com.google.common.base.Splitter;
 import com.google.inject.Singleton;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.shishmakov.util.QueueUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -12,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
 import java.util.Iterator;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -29,6 +32,9 @@ public class ConsoleService {
     @Inject
     @Named("elevator.executor")
     private ExecutorService executor;
+    @Inject
+    @Named("elevator.commands")
+    private BlockingQueue<Command> commands;
     @Inject
     private Provider<ServiceController> service;
 
@@ -75,7 +81,7 @@ public class ConsoleService {
                 final String cmd = trim(lowerCase(it.next()));
                 if (isBlank(cmd)) continue;
 
-                fileLogger.debug("{} user typed: {}", NAME, cmd);
+                fileLogger.info("{} user typed: {}", NAME, cmd);
                 switch (cmd) {
                     case "/h":
                     case "/help":
@@ -87,24 +93,37 @@ public class ConsoleService {
                         break;
                     case "/b":
                     case "/button":
-                        // todo
-                        logger.info("Nothing todo");
+                        pressButton(it);
                         continue;
                     case "/e":
                     case "/elevator":
-                        // todo
-                        logger.info("Nothing todo");
+                        callElevator();
                         continue;
                 }
             }
         } catch (Exception e) {
-            logger.error("{} error in time of processing", NAME, e);
+            logger.error("{} error at the time of processing", NAME, e);
         } finally {
             shutdownConsole();
         }
     }
 
-    private static void printHelp() {
+    private void callElevator() {
+        QueueUtils.offer(commands, Command.callElevator());
+    }
+
+    private void pressButton(Iterator<String> it) {
+        final String number = it.hasNext() ? it.next() : EMPTY;
+        try {
+            if (isBlank(number) || !NumberUtils.isCreatable(number)) {
+                logger.info("Could not parse your typing. Please try again...\n");
+            } else QueueUtils.offer(commands, Command.pressButton(Integer.valueOf(number)));
+        } catch (Exception e) {
+            logger.error("{} error at the time to send command\n", NAME, e);
+        }
+    }
+
+    private void printHelp() {
         logger.info(String.format("\t%s - %s%n\t%s%n", "h", "help", "You see current message"));
         logger.info(String.format("\t%s - %s%n\t%s%n", "b",
                 "button <number>",
