@@ -3,7 +3,7 @@ package ru.shishmakov.util;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * @author Dmitriy Shishmakov on 12.03.17
+ * @author Dmitriy Shishmakov on 31.07.17
  */
 public enum LifeCycle {
     IDLE,
