@@ -2,7 +2,8 @@ package ru.shishmakov.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.shishmakov.util.ElevatorState;
+import ru.shishmakov.core.state.ElevatorState;
+import ru.shishmakov.core.state.IdleState;
 import ru.shishmakov.util.QueueUtils;
 import ru.shishmakov.util.Threads;
 
@@ -15,8 +16,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static ru.shishmakov.core.Command.BLANK;
-import static ru.shishmakov.util.ElevatorState.IDLE;
 
 @Singleton
 public class ElevatorService {
@@ -26,9 +25,11 @@ public class ElevatorService {
     private static final String NAME = MethodHandles.lookup().lookupClass().getSimpleName();
 
     private final AtomicBoolean watcherState = new AtomicBoolean(true);
-    private ElevatorState state = IDLE;
-    private Command command = BLANK;
-    private int startFloor, pastFloor, goalFloor = 1;
+
+    /**
+     * Current elevator state
+     */
+    private volatile ElevatorState round = new IdleState(1);
 
     @Inject
     @Named("elevator.executor")
