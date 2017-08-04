@@ -2,15 +2,21 @@ package ru.shishmakov.core.state;
 
 import ru.shishmakov.core.Command;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 /**
  * The elevator without a passenger with closed door
  */
+@Singleton
+@Named("idle.state")
 public class IdleState extends ElevatorState {
-    private final int floor;
+    private int floor = 1;
 
-    public IdleState(int floor) {
-        super("Idle", Long.MAX_VALUE);
+    public IdleState init(int floor) {
+        super.init("Idle", Long.MAX_VALUE);
         this.floor = floor;
+        return this;
     }
 
     /**
@@ -19,7 +25,7 @@ public class IdleState extends ElevatorState {
      * @return ElevatorState - current state
      */
     @Override
-    protected ElevatorState nextState() {
+    protected ElevatorState tryGoNext() {
         // do nothing
         return this;
     }
@@ -35,21 +41,19 @@ public class IdleState extends ElevatorState {
         ElevatorState next = this;
         switch (cmd.getType()) {
             default:
-            case BLANK:
                 // do nothing
                 break;
             case CALL_ELEVATOR:
                 if (floor > 1) {
-                    next = new MoveUpOrDownState("Move Down", 0/*define*/, floor, cmd.getFloor());
-                }
-                if (floor == 1) {
-                    next = new StopOpenState(0/*define*/, floor);
+                    next = moveUpOrDownProvider.get().init("Move down", 0/*define*/, floor, cmd.getFloor());
+                } else {
+                    next = stopOpenProvider.get().init(0/*define*/, floor);
                 }
                 break;
             case PRESS_BUTTON:
                 if (floor != cmd.getFloor()) {
-                    String description = floor > cmd.getFloor() ? "Move Down state" : "Move Up";
-                    next = new MoveUpOrDownState(description, 0/*define*/, floor, cmd.getFloor());
+                    String description = floor > cmd.getFloor() ? "Move down" : "Move up";
+                    next = moveUpOrDownProvider.get().init(description, 0/*define*/, floor, cmd.getFloor());
                 }
                 break;
         }

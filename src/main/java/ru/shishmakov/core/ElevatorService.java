@@ -2,13 +2,13 @@ package ru.shishmakov.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.shishmakov.core.state.ElevatorState;
 import ru.shishmakov.core.state.IdleState;
 import ru.shishmakov.util.QueueUtils;
 import ru.shishmakov.util.Threads;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.concurrent.BlockingQueue;
@@ -29,7 +29,9 @@ public class ElevatorService {
     /**
      * Current elevator state
      */
-    private volatile ElevatorState round = new IdleState(1);
+    @Inject
+    @Named("idle.state")
+    private Provider<IdleState> state;
 
     @Inject
     @Named("elevator.executor")
@@ -37,9 +39,6 @@ public class ElevatorService {
     @Inject
     @Named("elevator.commands")
     private BlockingQueue<Command> commands;
-    @Inject
-    @Named("elevator.inbound")
-    private Inbound inbound;
 
     public void start() {
         logger.info("{} starting...", NAME);
