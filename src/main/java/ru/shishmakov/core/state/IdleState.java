@@ -2,14 +2,9 @@ package ru.shishmakov.core.state;
 
 import ru.shishmakov.core.Command;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 /**
  * The elevator without a passenger with closed door
  */
-@Singleton
-@Named("idle.state")
 public class IdleState extends ElevatorState {
     private int floor = 1;
 

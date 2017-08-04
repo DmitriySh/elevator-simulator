@@ -19,7 +19,6 @@ public abstract class ElevatorState {
     @Inject
     @Named("elevator.inbound")
     protected Inbound inbound;
-
     @Inject
     protected Provider<IdleState> idleProvider;
     @Inject
