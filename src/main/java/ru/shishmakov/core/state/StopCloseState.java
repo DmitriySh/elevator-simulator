@@ -4,6 +4,7 @@ import ru.shishmakov.core.Command;
 import ru.shishmakov.util.QueueUtils;
 
 public class StopCloseState extends ElevatorState {
+    private boolean notify;
 
     /**
      * Try to move to the next state on elapsed timeout
@@ -37,7 +38,7 @@ public class StopCloseState extends ElevatorState {
                 // do nothing
                 break;
             case PRESS_BUTTON:
-                if (elevatorCommands.isEmpty()) {
+                if (elevatorCommands.isEmpty() && cmd.getFloor() != floor) {
                     QueueUtils.offer(elevatorCommands, cmd);
                 }
                 break;
@@ -47,6 +48,10 @@ public class StopCloseState extends ElevatorState {
 
     @Override
     public void print() {
+        if (!notify) {
+            notify = true;
+            logger.info("\t{} floor, elevator close doors", floor);
+        }
 
     }
 }

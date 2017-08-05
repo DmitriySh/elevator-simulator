@@ -2,6 +2,8 @@ package ru.shishmakov.core;
 
 import javax.inject.Singleton;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 @Singleton
@@ -13,6 +15,10 @@ public class TimeController {
 
     public Instant nowInstant() {
         return Instant.ofEpochMilli(now());
+    }
+
+    public LocalDateTime nowLocalDateTime() {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(now()), ZoneId.of("UTC"));
     }
 
     public boolean isTimeExpired(long timeStamp) {

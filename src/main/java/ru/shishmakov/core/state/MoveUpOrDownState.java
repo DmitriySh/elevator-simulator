@@ -1,6 +1,11 @@
 package ru.shishmakov.core.state;
 
+import com.google.common.math.DoubleMath;
 import ru.shishmakov.core.Command;
+
+import java.util.concurrent.TimeUnit;
+
+import static java.math.RoundingMode.HALF_UP;
 
 public class MoveUpOrDownState extends ElevatorState {
     int startFloor, goalFloor;
@@ -33,6 +38,14 @@ public class MoveUpOrDownState extends ElevatorState {
 
     @Override
     public void print() {
-
+        double deltaTimeSec = TimeUnit.MILLISECONDS.toSeconds(deadline - timeController.now());
+        double remainFloors = deltaTimeSec * inbound.velocity / inbound.height;
+        int currentFloor = DoubleMath.roundToInt(Math.abs(startFloor > goalFloor
+                ? goalFloor + remainFloors
+                : goalFloor - remainFloors), HALF_UP);
+        if (currentFloor != floor) {
+            floor = currentFloor;
+            logger.info("\t{} floor", floor);
+        }
     }
 }

@@ -6,6 +6,7 @@ import ru.shishmakov.core.Command;
  * The elevator without a passenger with closed door
  */
 public class IdleState extends ElevatorState {
+    private boolean notify;
 
     /**
      * Current {@link IdleState} could be change only by command
@@ -49,6 +50,9 @@ public class IdleState extends ElevatorState {
 
     @Override
     public void print() {
-        fileLogger.info("Idle state, timestamp: {}", System.currentTimeMillis());
+        if (!notify) {
+            notify = true;
+            fileLogger.info("Idle state, utc: {}", timeController.nowLocalDateTime());
+        }
     }
 }
