@@ -1,5 +1,6 @@
 package ru.shishmakov.core.state;
 
+import com.google.common.base.MoreObjects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.shishmakov.core.Command;
@@ -11,6 +12,7 @@ import javax.inject.Named;
 import javax.inject.Provider;
 import java.util.concurrent.BlockingQueue;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -46,6 +48,8 @@ public abstract class ElevatorState {
     public abstract void print();
 
     public ElevatorState init(String description, long deadline, int floor) {
+        checkArgument(timeController.isAfterOrNow(deadline), "deadline should be in the future time");
+        checkArgument(floor > 0, "floor should be positive value");
         this.description = description;
         this.deadline = deadline;
         this.floor = floor;
@@ -54,6 +58,7 @@ public abstract class ElevatorState {
 
     public ElevatorState buildIdleState(int floor) {
         IdleState state = idleProvider.get();
+        fileLogger.debug("next state: ", state);
         return state.init("Idle", Long.MAX_VALUE, floor);
     }
 
@@ -63,6 +68,7 @@ public abstract class ElevatorState {
         MoveUpOrDownState state = moveUpOrDownProvider.get();
         state.startFloor = startFloor;
         state.goalFloor = goalFloor;
+        fileLogger.debug("next state: ", state);
         return state.init(startFloor > goalFloor ? "Move down" : "Move up", deadline, startFloor);
     }
 
@@ -70,12 +76,23 @@ public abstract class ElevatorState {
         long doorMillis = inbound.door * 1000;
         long deadline = timeController.nowPlus(doorMillis - (doorMillis / 3), MILLIS);
         StopOpenState state = stopOpenProvider.get();
+        fileLogger.debug("next state: ", state);
         return state.init("Stop open", deadline, floor);
     }
 
     public ElevatorState buildStopClose(int floor) {
         long deadline = timeController.nowPlus((inbound.door * 1000) / 3, MILLIS);
         StopCloseState state = stopCloseProvider.get();
+        fileLogger.debug("next state: {}", state);
         return state.init("Stop close", deadline, floor);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("description", description)
+                .add("deadline", deadline)
+                .add("floor", floor)
+                .toString();
     }
 }

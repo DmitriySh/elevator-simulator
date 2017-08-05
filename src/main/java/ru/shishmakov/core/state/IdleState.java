@@ -2,11 +2,18 @@ package ru.shishmakov.core.state;
 
 import ru.shishmakov.core.Command;
 
+import javax.annotation.PostConstruct;
+
 /**
  * The elevator without a passenger with closed door
  */
 public class IdleState extends ElevatorState {
     private boolean notify;
+
+    @PostConstruct
+    public void setUp() {
+        this.floor = 1;
+    }
 
     /**
      * Current {@link IdleState} could be change only by command
