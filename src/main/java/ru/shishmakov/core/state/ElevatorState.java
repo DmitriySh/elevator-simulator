@@ -16,6 +16,7 @@ public abstract class ElevatorState {
 
     protected String description;
     protected long deadline;
+    protected int floor;
 
     @Inject
     @Named("elevator.inbound")
@@ -24,23 +25,50 @@ public abstract class ElevatorState {
     @Named("elevator.commands")
     protected BlockingQueue<Command> elevatorCommands;
     @Inject
-    protected Provider<IdleState> idleProvider;
+    private Provider<IdleState> idleProvider;
     @Inject
-    protected Provider<MoveUpOrDownState> moveUpOrDownProvider;
+    private Provider<MoveUpOrDownState> moveUpOrDownProvider;
     @Inject
-    protected Provider<StopCloseState> stopCloseProvider;
+    private Provider<StopCloseState> stopCloseProvider;
     @Inject
-    protected Provider<StopOpenState> stopOpenProvider;
-
-    public ElevatorState init(String description, long deadline) {
-        this.description = description;
-        this.deadline = deadline;
-        return this;
-    }
+    private Provider<StopOpenState> stopOpenProvider;
 
     public abstract ElevatorState tryGoNext();
 
     public abstract ElevatorState applyCommand(Command cmd);
 
     public abstract void print();
+
+    public ElevatorState init(String description, long deadline, int floor) {
+        this.description = description;
+        this.deadline = deadline;
+        this.floor = floor;
+        return this;
+    }
+
+    public ElevatorState buildIdleState(int floor) {
+        IdleState idle = idleProvider.get();
+        idle.init("Idle", Long.MAX_VALUE, floor);
+        return idle;
+    }
+
+    public ElevatorState buildMoveUpOrDownState(long deadline, int startFloor, int goalFloor) {
+        MoveUpOrDownState moveUpOrDown = moveUpOrDownProvider.get();
+        moveUpOrDown.init(startFloor > goalFloor ? "Move down" : "Move up", deadline, startFloor);
+        moveUpOrDown.startFloor = startFloor;
+        moveUpOrDown.goalFloor = goalFloor;
+        return this;
+    }
+
+    public ElevatorState buildStopOpenState(long deadline, int floor) {
+        StopOpenState stopOpen = stopOpenProvider.get();
+        stopOpen.init("Stop open", deadline, floor);
+        return this;
+    }
+
+    public ElevatorState buildStopClose(long deadline, int floor) {
+        StopCloseState stopClose = stopCloseProvider.get();
+        stopClose.init("Stop close", deadline, floor);
+        return this;
+    }
 }

@@ -5,13 +5,6 @@ import ru.shishmakov.util.QueueUtils;
 import ru.shishmakov.util.TimeUtils;
 
 public class StopOpenState extends ElevatorState {
-    private int floor;
-
-    public ElevatorState init(long deadline, int floor) {
-        super.init("Stop open", deadline);
-        this.floor = floor;
-        return this;
-    }
 
     /**
      * Try to move to the next state on elapsed timeout
@@ -22,7 +15,7 @@ public class StopOpenState extends ElevatorState {
     public ElevatorState tryGoNext() {
         ElevatorState state = this;
         if (TimeUtils.isTimeExpired(deadline)) {
-            state = stopCloseProvider.get().init(floor);
+            state = buildStopClose(0/*define*/, floor);
         }
         return state;
     }
@@ -48,7 +41,7 @@ public class StopOpenState extends ElevatorState {
                 if (elevatorCommands.isEmpty()) {
                     QueueUtils.offer(elevatorCommands, cmd);
                 }
-                next = stopCloseProvider.get().init(floor);
+                next = buildStopClose(0/*define*/, floor);
                 break;
         }
         return next;

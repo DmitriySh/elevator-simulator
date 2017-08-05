@@ -6,13 +6,6 @@ import ru.shishmakov.core.Command;
  * The elevator without a passenger with closed door
  */
 public class IdleState extends ElevatorState {
-    private int floor = 1;
-
-    public ElevatorState init(int floor) {
-        super.init("Idle", Long.MAX_VALUE);
-        this.floor = floor;
-        return this;
-    }
 
     /**
      * Current {@link IdleState} could be change only by command
@@ -40,14 +33,14 @@ public class IdleState extends ElevatorState {
                 break;
             case CALL_ELEVATOR:
                 if (floor > 1) {
-                    next = moveUpOrDownProvider.get().init(0/*define*/, floor, cmd.getFloor());
+                    next = buildMoveUpOrDownState(0/*define*/, floor, cmd.getFloor());
                 } else {
-                    next = stopOpenProvider.get().init(0/*define*/, floor);
+                    next = buildStopOpenState(0/*define*/, floor);
                 }
                 break;
             case PRESS_BUTTON:
                 if (floor != cmd.getFloor()) {
-                    next = moveUpOrDownProvider.get().init(0/*define*/, floor, cmd.getFloor());
+                    next = buildMoveUpOrDownState(0/*define*/, floor, cmd.getFloor());
                 }
                 break;
         }

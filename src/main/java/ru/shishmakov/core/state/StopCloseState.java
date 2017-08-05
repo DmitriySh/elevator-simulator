@@ -4,16 +4,7 @@ import ru.shishmakov.core.Command;
 import ru.shishmakov.util.QueueUtils;
 import ru.shishmakov.util.TimeUtils;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-
 public class StopCloseState extends ElevatorState {
-    private int floor;
-
-    public ElevatorState init(int floor) {
-        super.init("Stop close", TimeUtils.nowPlus(1, SECONDS));
-        this.floor = floor;
-        return this;
-    }
 
     /**
      * Try to move to the next state on elapsed timeout
@@ -25,8 +16,8 @@ public class StopCloseState extends ElevatorState {
         ElevatorState state = this;
         if (TimeUtils.isTimeExpired(deadline)) {
             state = QueueUtils.poll(elevatorCommands)
-                    .map(cmd -> moveUpOrDownProvider.get().init(0/*define*/, floor, cmd.getFloor()))
-                    .orElse(idleProvider.get().init(floor));
+                    .map(cmd -> buildMoveUpOrDownState(0/*define*/, floor, cmd.getFloor()))
+                    .orElse(buildIdleState(floor));
         }
         return state;
     }
