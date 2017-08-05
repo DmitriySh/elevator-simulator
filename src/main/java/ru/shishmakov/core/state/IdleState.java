@@ -47,7 +47,9 @@ public class IdleState extends ElevatorState {
                 }
                 break;
             case PRESS_BUTTON:
-                if (floor != cmd.getFloor()) {
+                if (floor == cmd.getFloor()) {
+                    next = buildStopOpenState(floor);
+                } else {
                     next = buildMoveUpOrDownState(floor, cmd.getFloor());
                 }
                 break;

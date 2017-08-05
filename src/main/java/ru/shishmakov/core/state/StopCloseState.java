@@ -30,6 +30,7 @@ public class StopCloseState extends ElevatorState {
      */
     @Override
     public ElevatorState applyCommand(Command cmd) {
+        ElevatorState next = this;
         switch (cmd.getType()) {
             default:
                 // do nothing
@@ -38,12 +39,13 @@ public class StopCloseState extends ElevatorState {
                 // do nothing
                 break;
             case PRESS_BUTTON:
-                if (elevatorCommands.isEmpty() && cmd.getFloor() != floor) {
-                    QueueUtils.offer(elevatorCommands, cmd);
+                if (elevatorCommands.isEmpty()) {
+                    if (cmd.getFloor() == floor) next = buildStopOpenState(floor);
+                    else QueueUtils.offer(elevatorCommands, cmd);
                 }
                 break;
         }
-        return this;
+        return next;
     }
 
     @Override
