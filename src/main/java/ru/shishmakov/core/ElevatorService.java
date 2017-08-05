@@ -69,15 +69,12 @@ public class ElevatorService {
     private void process() {
         while (watcherState.get() && !Thread.currentThread().isInterrupted()) {
             Threads.sleepWithInterruptedAfterTimeout(250, MILLISECONDS);// TODO: 05.08.17 use TimeConfig
-            if (consoleCommands.isEmpty()) continue;
 
-            QueueUtils.poll(consoleCommands).ifPresent(cmd -> {
-                fileLogger.info("command: {}", cmd.getDescription());
-                state = state
-                        .tryGoNext()
-                        .applyCommand(cmd);
-                state.print();
-            });
+            state = state.tryGoNext();
+            state = QueueUtils.poll(consoleCommands, 1, 20, MILLISECONDS)
+                    .map(cmd -> state.applyCommand(cmd))
+                    .orElse(state)
+                    .print();
         }
     }
 
