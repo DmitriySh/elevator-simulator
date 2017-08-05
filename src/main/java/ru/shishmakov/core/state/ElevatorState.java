@@ -58,7 +58,7 @@ public abstract class ElevatorState {
 
     public ElevatorState buildIdleState(int floor) {
         IdleState state = idleProvider.get();
-        fileLogger.debug("next state: ", state);
+        fileLogger.debug("next state: {}", state);
         return state.init("Idle", Long.MAX_VALUE, floor);
     }
 
@@ -68,7 +68,7 @@ public abstract class ElevatorState {
         MoveUpOrDownState state = moveUpOrDownProvider.get();
         state.startFloor = startFloor;
         state.goalFloor = goalFloor;
-        fileLogger.debug("next state: ", state);
+        fileLogger.debug("next state: {}", state);
         return state.init(startFloor > goalFloor ? "Move down" : "Move up", deadline, startFloor);
     }
 
@@ -76,7 +76,7 @@ public abstract class ElevatorState {
         long doorMillis = inbound.door * 1000;
         long deadline = timeController.nowPlus(doorMillis - (doorMillis / 3), MILLIS);
         StopOpenState state = stopOpenProvider.get();
-        fileLogger.debug("next state: ", state);
+        fileLogger.debug("next state: {}", state);
         return state.init("Stop open", deadline, floor);
     }
 
