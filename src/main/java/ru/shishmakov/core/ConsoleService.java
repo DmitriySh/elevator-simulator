@@ -1,6 +1,7 @@
 package ru.shishmakov.core;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.Range;
 import com.google.inject.Singleton;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.apache.commons.lang3.StringUtils.*;
+import static ru.shishmakov.core.Inbound.FLOORS;
 
 /**
  * @author Dmitriy Shishmakov on 31.07.17
@@ -114,20 +116,25 @@ public class ConsoleService {
     }
 
     private void pressButton(Iterator<String> it) {
-        final String number = it.hasNext() ? it.next() : EMPTY;
+        final String source = it.hasNext() ? it.next() : EMPTY;
         try {
-            if (isBlank(number) || !NumberUtils.isCreatable(number)) {
-                logger.info("Could not parse your typing. Please try again...\n");
-            } else QueueUtils.offer(consoleCommands, Command.pressButton(Integer.valueOf(number)));
+            if (isValidateNumber(source)) {
+                QueueUtils.offer(consoleCommands, Command.pressButton(Integer.valueOf(source)));
+            } else logger.info("Your floor number is not valid. Please try again...\n");
         } catch (Exception e) {
             logger.error("{} error at the time to send command\n", NAME, e);
         }
     }
 
+    private boolean isValidateNumber(String source) {
+        if (isBlank(source) || !NumberUtils.isCreatable(source)) return false;
+        else return Range.closed(1, FLOORS.upperEndpoint()).contains(Integer.valueOf(source));
+    }
+
     private void printHelp() {
         logger.info(String.format("\t%s - %s%n\t%s%n", "h", "help", "You see current message"));
         logger.info(String.format("\t%s - %s%n\t%s%n", "b",
-                "button <number>",
+                "button [1.." + FLOORS.upperEndpoint() + "]",
                 "Press the button to select the floor"));
         logger.info(String.format("\t%s - %s%n\t%s%n", "e",
                 "elevator",

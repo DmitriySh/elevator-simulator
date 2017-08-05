@@ -11,6 +11,8 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author <a href="mailto:d.shishmakov@corp.nekki.ru">Shishmakov Dmitriy</a>
  */
 public class Inbound {
+    public static final Range<Integer> FLOORS = Range.closed(5, 100);
+
     @Parameter(names = {"-n"}, description = "Number of floors", required = true)
     public int number;
 
@@ -33,11 +35,10 @@ public class Inbound {
     }
 
     private Inbound validate() {
-        Range<Integer> floors = Range.closed(5, 100);
         Range<Integer> heights = Range.closed(1, 10);
         Range<Integer> velocities = Range.closed(1, 10);
         Range<Integer> doorTimes = Range.closed(2, 20);
-        checkArgument(floors.contains(number), "Number of floors: %s should be in range %s", number, floors);
+        checkArgument(FLOORS.contains(number), "Number of floors: %s should be in range %s", number, FLOORS);
         checkArgument(heights.contains(height), "Height of floor: %s should be in range %s m", height, heights);
         checkArgument(velocities.contains(velocity), "Velocity of elevator: %s should be in range %s m/s", velocity, velocities);
         checkArgument(doorTimes.contains(door),
