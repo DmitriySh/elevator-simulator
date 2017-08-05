@@ -11,6 +11,9 @@ import javax.inject.Named;
 import javax.inject.Provider;
 import java.util.concurrent.BlockingQueue;
 
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.SECONDS;
+
 public abstract class ElevatorState {
     protected static final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -50,28 +53,29 @@ public abstract class ElevatorState {
     }
 
     public ElevatorState buildIdleState(int floor) {
-        IdleState idle = idleProvider.get();
-        idle.init("Idle", Long.MAX_VALUE, floor);
-        return idle;
+        IdleState state = idleProvider.get();
+        return state.init("Idle", Long.MAX_VALUE, floor);
     }
 
-    public ElevatorState buildMoveUpOrDownState(long deadline, int startFloor, int goalFloor) {
-        MoveUpOrDownState moveUpOrDown = moveUpOrDownProvider.get();
-        moveUpOrDown.init(startFloor > goalFloor ? "Move down" : "Move up", deadline, startFloor);
-        moveUpOrDown.startFloor = startFloor;
-        moveUpOrDown.goalFloor = goalFloor;
-        return this;
+    public ElevatorState buildMoveUpOrDownState(int startFloor, int goalFloor) {
+        int deltaFloor = Math.abs(goalFloor - startFloor);
+        long deadline = timeController.nowPlus((deltaFloor * inbound.height) / inbound.velocity, SECONDS);
+        MoveUpOrDownState state = moveUpOrDownProvider.get();
+        state.startFloor = startFloor;
+        state.goalFloor = goalFloor;
+        return state.init(startFloor > goalFloor ? "Move down" : "Move up", deadline, startFloor);
     }
 
-    public ElevatorState buildStopOpenState(long deadline, int floor) {
-        StopOpenState stopOpen = stopOpenProvider.get();
-        stopOpen.init("Stop open", deadline, floor);
-        return this;
+    public ElevatorState buildStopOpenState(int floor) {
+        long doorMillis = inbound.door * 1000;
+        long deadline = timeController.nowPlus(doorMillis - (doorMillis / 3), MILLIS);
+        StopOpenState state = stopOpenProvider.get();
+        return state.init("Stop open", deadline, floor);
     }
 
-    public ElevatorState buildStopClose(long deadline, int floor) {
-        StopCloseState stopClose = stopCloseProvider.get();
-        stopClose.init("Stop close", deadline, floor);
-        return this;
+    public ElevatorState buildStopClose(int floor) {
+        long deadline = timeController.nowPlus((inbound.door * 1000) / 3, MILLIS);
+        StopCloseState state = stopCloseProvider.get();
+        return state.init("Stop close", deadline, floor);
     }
 }

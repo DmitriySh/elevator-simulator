@@ -17,10 +17,10 @@ public class Inbound {
     @Parameter(names = {"-h"}, description = "Height of floor", required = true)
     public int height;
 
-    @Parameter(names = {"-v"}, description = "Velocity of elevator", required = true)
+    @Parameter(names = {"-v"}, description = "Velocity of elevator in m/sec", required = true)
     public int velocity;
 
-    @Parameter(names = {"-d"}, description = "Duration of time between the opening and closing elevator door", required = true)
+    @Parameter(names = {"-d"}, description = "Duration of time sec between the opening and closing elevator door", required = true)
     public int door;
 
     private Inbound() {

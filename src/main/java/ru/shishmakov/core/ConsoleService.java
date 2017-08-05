@@ -29,6 +29,7 @@ public class ConsoleService {
     private static final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
 
     private static final String NAME = MethodHandles.lookup().lookupClass().getSimpleName();
+
     @Inject
     @Named("elevator.executor")
     private ExecutorService executor;

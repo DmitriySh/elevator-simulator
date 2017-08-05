@@ -14,7 +14,7 @@ public class StopOpenState extends ElevatorState {
     public ElevatorState tryGoNext() {
         ElevatorState state = this;
         if (timeController.isTimeExpired(deadline)) {
-            state = buildStopClose(0/*define*/, floor);
+            state = buildStopClose(floor);
         }
         return state;
     }
@@ -40,7 +40,7 @@ public class StopOpenState extends ElevatorState {
                 if (elevatorCommands.isEmpty()) {
                     QueueUtils.offer(elevatorCommands, cmd);
                 }
-                next = buildStopClose(0/*define*/, floor);
+                next = buildStopClose(floor);
                 break;
         }
         return next;

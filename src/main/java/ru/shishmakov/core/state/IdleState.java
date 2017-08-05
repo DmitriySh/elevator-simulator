@@ -33,14 +33,14 @@ public class IdleState extends ElevatorState {
                 break;
             case CALL_ELEVATOR:
                 if (floor > 1) {
-                    next = buildMoveUpOrDownState(0/*define*/, floor, cmd.getFloor());
+                    next = buildMoveUpOrDownState(floor, cmd.getFloor());
                 } else {
-                    next = buildStopOpenState(0/*define*/, floor);
+                    next = buildStopOpenState(floor);
                 }
                 break;
             case PRESS_BUTTON:
                 if (floor != cmd.getFloor()) {
-                    next = buildMoveUpOrDownState(0/*define*/, floor, cmd.getFloor());
+                    next = buildMoveUpOrDownState(floor, cmd.getFloor());
                 }
                 break;
         }

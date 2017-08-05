@@ -15,7 +15,7 @@ public class StopCloseState extends ElevatorState {
         ElevatorState state = this;
         if (timeController.isTimeExpired(deadline)) {
             state = QueueUtils.poll(elevatorCommands)
-                    .map(cmd -> buildMoveUpOrDownState(0/*define*/, floor, cmd.getFloor()))
+                    .map(cmd -> buildMoveUpOrDownState(floor, cmd.getFloor()))
                     .orElse(buildIdleState(floor));
         }
         return state;

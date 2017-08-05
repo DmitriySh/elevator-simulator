@@ -14,7 +14,7 @@ public class MoveUpOrDownState extends ElevatorState {
     public ElevatorState tryGoNext() {
         ElevatorState state = this;
         if (timeController.isTimeExpired(deadline)) {
-            state = buildStopOpenState(0/*define*/, goalFloor);
+            state = buildStopOpenState(goalFloor);
         }
         return state;
     }

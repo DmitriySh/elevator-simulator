@@ -2,7 +2,6 @@ package ru.shishmakov.core;
 
 import com.google.common.base.MoreObjects;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static ru.shishmakov.core.Command.CommandType.CALL_ELEVATOR;
 import static ru.shishmakov.core.Command.CommandType.PRESS_BUTTON;
@@ -13,7 +12,6 @@ public class Command {
     private final String description;
 
     private Command(CommandType type, int floor, String description) {
-        checkArgument(floor > 0, "Command should have positive floor number: %s", floor);
         this.floor = floor;
         this.type = type;
         this.description = checkNotNull(description, "description is null");
