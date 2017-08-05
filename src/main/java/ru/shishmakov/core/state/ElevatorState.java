@@ -58,8 +58,9 @@ public abstract class ElevatorState {
 
     public ElevatorState buildIdleState(int floor) {
         IdleState state = idleProvider.get();
-        fileLogger.debug("next state: {}", state);
-        return state.init("Idle", Long.MAX_VALUE, floor);
+        state.init("Idle", Long.MAX_VALUE, floor);
+        printState(state);
+        return state;
     }
 
     public ElevatorState buildMoveUpOrDownState(int startFloor, int goalFloor) {
@@ -68,23 +69,30 @@ public abstract class ElevatorState {
         MoveUpOrDownState state = moveUpOrDownProvider.get();
         state.startFloor = startFloor;
         state.goalFloor = goalFloor;
-        fileLogger.debug("next state: {}", state);
-        return state.init(startFloor > goalFloor ? "Move down" : "Move up", deadline, startFloor);
+        state.init(startFloor > goalFloor ? "Move down" : "Move up", deadline, startFloor);
+        printState(state);
+        return state;
     }
 
     public ElevatorState buildStopOpenState(int floor) {
         long doorMillis = inbound.door * 1000;
         long deadline = timeController.nowPlus(doorMillis - (doorMillis / 3), MILLIS);
         StopOpenState state = stopOpenProvider.get();
-        fileLogger.debug("next state: {}", state);
-        return state.init("Stop open", deadline, floor);
+        state.init("Stop open", deadline, floor);
+        printState(state);
+        return state;
     }
 
     public ElevatorState buildStopClose(int floor) {
         long deadline = timeController.nowPlus((inbound.door * 1000) / 3, MILLIS);
         StopCloseState state = stopCloseProvider.get();
-        fileLogger.debug("next state: {}", state);
-        return state.init("Stop close", deadline, floor);
+        state.init("Stop close", deadline, floor);
+        printState(state);
+        return state;
+    }
+
+    private void printState(ElevatorState state) {
+        fileLogger.debug("next state: {}; deltaTime: {}", state, state.deadline - timeController.now());
     }
 
     @Override
