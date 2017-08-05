@@ -70,9 +70,12 @@ public class ElevatorService {
         while (watcherState.get() && !Thread.currentThread().isInterrupted()) {
             Threads.sleepWithInterruptedAfterTimeout(250, MILLISECONDS);// TODO: 05.08.17 use TimeConfig
 
+            if (!consoleCommands.isEmpty()) {
+                fileLogger.info("command: {}", consoleCommands.peek().getDescription());
+            }
             state = state.tryGoNext();
             state = QueueUtils.poll(consoleCommands, 1, 20, MILLISECONDS)
-                    .map(cmd -> state.applyCommand(cmd))
+                    .map(state::applyCommand)
                     .orElse(state)
                     .print();
         }
