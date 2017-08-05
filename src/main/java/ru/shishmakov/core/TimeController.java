@@ -1,45 +1,47 @@
-package ru.shishmakov.util;
+package ru.shishmakov.core;
 
+import javax.inject.Singleton;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-public class TimeUtils {
+@Singleton
+public class TimeController {
 
-    public static long now() {
+    public long now() {
         return System.currentTimeMillis();
     }
 
-    public static Instant nowInstant() {
+    public Instant nowInstant() {
         return Instant.ofEpochMilli(now());
     }
 
-    public static boolean isTimeExpired(long timeStamp) {
+    public boolean isTimeExpired(long timeStamp) {
         return isBeforeOrNow(timeStamp);
     }
 
-    public static boolean isTimeNotExpired(long timeStamp) {
+    public boolean isTimeNotExpired(long timeStamp) {
         return isAfterNow(timeStamp);
     }
 
-    public static boolean isAfterNow(long timeStamp) {
+    public boolean isAfterNow(long timeStamp) {
         return timeStamp > now();
     }
 
-    public static boolean isAfterOrNow(long timeStamp) {
+    public boolean isAfterOrNow(long timeStamp) {
         long now = now();
         return timeStamp > now || now == timeStamp;
     }
 
-    public static boolean isBeforeNow(long timeStamp) {
+    public boolean isBeforeNow(long timeStamp) {
         return now() > timeStamp;
     }
 
-    public static boolean isBeforeOrNow(long timeStamp) {
+    public boolean isBeforeOrNow(long timeStamp) {
         long now = now();
         return now > timeStamp || now == timeStamp;
     }
 
-    public static long nowPlus(long amount, ChronoUnit unit) {
+    public long nowPlus(long amount, ChronoUnit unit) {
         return nowInstant().plus(amount, unit).toEpochMilli();
     }
 }

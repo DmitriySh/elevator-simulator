@@ -2,7 +2,6 @@ package ru.shishmakov.core.state;
 
 import ru.shishmakov.core.Command;
 import ru.shishmakov.util.QueueUtils;
-import ru.shishmakov.util.TimeUtils;
 
 public class StopCloseState extends ElevatorState {
 
@@ -14,7 +13,7 @@ public class StopCloseState extends ElevatorState {
     @Override
     public ElevatorState tryGoNext() {
         ElevatorState state = this;
-        if (TimeUtils.isTimeExpired(deadline)) {
+        if (timeController.isTimeExpired(deadline)) {
             state = QueueUtils.poll(elevatorCommands)
                     .map(cmd -> buildMoveUpOrDownState(0/*define*/, floor, cmd.getFloor()))
                     .orElse(buildIdleState(floor));

@@ -2,7 +2,6 @@ package ru.shishmakov.core.state;
 
 import ru.shishmakov.core.Command;
 import ru.shishmakov.util.QueueUtils;
-import ru.shishmakov.util.TimeUtils;
 
 public class StopOpenState extends ElevatorState {
 
@@ -14,7 +13,7 @@ public class StopOpenState extends ElevatorState {
     @Override
     public ElevatorState tryGoNext() {
         ElevatorState state = this;
-        if (TimeUtils.isTimeExpired(deadline)) {
+        if (timeController.isTimeExpired(deadline)) {
             state = buildStopClose(0/*define*/, floor);
         }
         return state;

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.shishmakov.core.Command;
 import ru.shishmakov.core.Inbound;
+import ru.shishmakov.core.TimeController;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -24,6 +25,8 @@ public abstract class ElevatorState {
     @Inject
     @Named("elevator.commands")
     protected BlockingQueue<Command> elevatorCommands;
+    @Inject
+    protected TimeController timeController;
     @Inject
     private Provider<IdleState> idleProvider;
     @Inject

@@ -1,7 +1,6 @@
 package ru.shishmakov.core.state;
 
 import ru.shishmakov.core.Command;
-import ru.shishmakov.util.TimeUtils;
 
 public class MoveUpOrDownState extends ElevatorState {
     int startFloor, goalFloor;
@@ -14,7 +13,7 @@ public class MoveUpOrDownState extends ElevatorState {
     @Override
     public ElevatorState tryGoNext() {
         ElevatorState state = this;
-        if (TimeUtils.isTimeExpired(deadline)) {
+        if (timeController.isTimeExpired(deadline)) {
             state = buildStopOpenState(0/*define*/, goalFloor);
         }
         return state;
