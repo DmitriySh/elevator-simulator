@@ -3,30 +3,24 @@ package ru.shishmakov.core;
 import com.google.common.base.MoreObjects;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static ru.shishmakov.core.Command.CommandType.CALL_ELEVATOR;
 import static ru.shishmakov.core.Command.CommandType.PRESS_BUTTON;
 
 public class Command {
-    public static final Command BLANK = new Command(CommandType.BLANK);
-
     private final CommandType type;
-    private int floor;
-    private String description = EMPTY;
-
-    private Command(CommandType type) {
-        this.type = type;
-    }
+    private final int floor;
+    private final String description;
 
     private Command(CommandType type, int floor, String description) {
-        this(type);
         checkArgument(floor > 0, "Command should have positive floor number: %s", floor);
         this.floor = floor;
-        this.description = description;
+        this.type = type;
+        this.description = checkNotNull(description, "description is null");
     }
 
     public static Command pressButton(int floor) {
-        return new Command(PRESS_BUTTON, floor, "press button");
+        return new Command(PRESS_BUTTON, floor, "press button: " + floor);
     }
 
     public static Command callElevator() {
@@ -43,10 +37,6 @@ public class Command {
 
     public CommandType getType() {
         return type;
-    }
-
-    public boolean isBlank() {
-        return type == CommandType.BLANK;
     }
 
     public boolean isCallElevator() {
@@ -67,7 +57,6 @@ public class Command {
     }
 
     public enum CommandType {
-        BLANK,
         PRESS_BUTTON,
         CALL_ELEVATOR
     }

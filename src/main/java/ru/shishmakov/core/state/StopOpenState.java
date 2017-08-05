@@ -13,7 +13,7 @@ public class StopOpenState extends ElevatorState {
     }
 
     @Override
-    protected ElevatorState tryGoNext() {
+    public ElevatorState tryGoNext() {
         ElevatorState state = this;
         if (TimeUtils.isTimeExpired(deadline)) {
             state = stopCloseProvider.get().init(floor);
@@ -22,7 +22,7 @@ public class StopOpenState extends ElevatorState {
     }
 
     @Override
-    protected ElevatorState applyCommand(Command cmd) {
+    public ElevatorState applyCommand(Command cmd) {
         ElevatorState next = this;
         switch (cmd.getType()) {
             default:
@@ -38,7 +38,7 @@ public class StopOpenState extends ElevatorState {
     }
 
     @Override
-    protected void print() {
+    public void print() {
 
     }
 }

@@ -21,7 +21,7 @@ public class MoveUpOrDownState extends ElevatorState {
      * @return ElevatorState - move up/down state or stop open state
      */
     @Override
-    protected ElevatorState tryGoNext() {
+    public ElevatorState tryGoNext() {
         ElevatorState state = this;
         if (TimeUtils.isTimeExpired(deadline)) {
             state = stopOpenProvider.get().init(0/*define*/, goalFloor);
@@ -36,13 +36,13 @@ public class MoveUpOrDownState extends ElevatorState {
      * @return ElevatorState - current state
      */
     @Override
-    protected ElevatorState applyCommand(Command cmd) {
+    public ElevatorState applyCommand(Command cmd) {
         // do nothing
         return this;
     }
 
     @Override
-    protected void print() {
+    public void print() {
 
     }
 }

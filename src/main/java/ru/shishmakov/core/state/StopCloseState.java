@@ -12,17 +12,17 @@ public class StopCloseState extends ElevatorState {
     }
 
     @Override
-    protected ElevatorState tryGoNext() {
+    public ElevatorState tryGoNext() {
         return null;
     }
 
     @Override
-    protected ElevatorState applyCommand(Command cmd) {
+    public ElevatorState applyCommand(Command cmd) {
         return null;
     }
 
     @Override
-    protected void print() {
+    public void print() {
 
     }
 }

@@ -20,7 +20,7 @@ public class IdleState extends ElevatorState {
      * @return ElevatorState - current state
      */
     @Override
-    protected ElevatorState tryGoNext() {
+    public ElevatorState tryGoNext() {
         // do nothing
         return this;
     }
@@ -32,7 +32,7 @@ public class IdleState extends ElevatorState {
      * @return ElevatorState - idle or move up/down state
      */
     @Override
-    protected ElevatorState applyCommand(Command cmd) {
+    public ElevatorState applyCommand(Command cmd) {
         ElevatorState next = this;
         switch (cmd.getType()) {
             default:
@@ -56,7 +56,7 @@ public class IdleState extends ElevatorState {
     }
 
     @Override
-    protected void print() {
+    public void print() {
         fileLogger.info("Idle state, timestamp: {}", System.currentTimeMillis());
     }
 }

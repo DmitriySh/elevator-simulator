@@ -34,9 +34,9 @@ public abstract class ElevatorState {
         return this;
     }
 
-    protected abstract ElevatorState tryGoNext();
+    public abstract ElevatorState tryGoNext();
 
-    protected abstract ElevatorState applyCommand(Command cmd);
+    public abstract ElevatorState applyCommand(Command cmd);
 
-    protected abstract void print();
+    public abstract void print();
 }
