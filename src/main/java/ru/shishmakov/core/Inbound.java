@@ -33,10 +33,10 @@ public class Inbound {
     }
 
     private Inbound validate() {
-        Range<Integer> floors = Range.closed(5, 20);
-        Range<Integer> heights = Range.closed(1, 20);
+        Range<Integer> floors = Range.closed(5, 100);
+        Range<Integer> heights = Range.closed(1, 10);
         Range<Integer> velocities = Range.closed(1, 10);
-        Range<Integer> doorTimes = Range.closed(1, 20);
+        Range<Integer> doorTimes = Range.closed(2, 20);
         checkArgument(floors.contains(number), "Number of floors: %s should be in range %s", number, floors);
         checkArgument(heights.contains(height), "Height of floor: %s should be in range %s m", height, heights);
         checkArgument(velocities.contains(velocity), "Velocity of elevator: %s should be in range %s m/s", velocity, velocities);
