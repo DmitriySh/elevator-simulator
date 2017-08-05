@@ -35,8 +35,8 @@ public class ElevatorService {
     @Named("elevator.executor")
     private ExecutorService executor;
     @Inject
-    @Named("elevator.commands")
-    private BlockingQueue<Command> commands;
+    @Named("console.commands")
+    private BlockingQueue<Command> consoleCommands;
 
     public void start() {
         logger.info("{} starting...", NAME);
@@ -69,9 +69,9 @@ public class ElevatorService {
     private void process() {
         while (watcherState.get() && !Thread.currentThread().isInterrupted()) {
             Threads.sleepWithInterruptedAfterTimeout(500, MILLISECONDS);// TODO: 05.08.17 use TimeConfig
-            if (commands.isEmpty()) continue;
+            if (consoleCommands.isEmpty()) continue;
 
-            QueueUtils.poll(commands).ifPresent(cmd -> {
+            QueueUtils.poll(consoleCommands).ifPresent(cmd -> {
                 fileLogger.info("command: {}", cmd.getDescription());
                 state = state
                         .tryGoNext()

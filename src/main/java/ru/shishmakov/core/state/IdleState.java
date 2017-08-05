@@ -8,16 +8,16 @@ import ru.shishmakov.core.Command;
 public class IdleState extends ElevatorState {
     private int floor = 1;
 
-    public IdleState init(int floor) {
+    public ElevatorState init(int floor) {
         super.init("Idle", Long.MAX_VALUE);
         this.floor = floor;
         return this;
     }
 
     /**
-     * Idle state could be change only by command
+     * Current {@link IdleState} could be change only by command
      *
-     * @return ElevatorState - current state
+     * @return ElevatorState - current {@link IdleState}
      */
     @Override
     public ElevatorState tryGoNext() {
@@ -29,7 +29,7 @@ public class IdleState extends ElevatorState {
      * Try to move to the next state
      *
      * @param cmd command
-     * @return ElevatorState - idle or move up/down state
+     * @return ElevatorState - {@link MoveUpOrDownState} or {@link StopOpenState}
      */
     @Override
     public ElevatorState applyCommand(Command cmd) {
@@ -40,15 +40,14 @@ public class IdleState extends ElevatorState {
                 break;
             case CALL_ELEVATOR:
                 if (floor > 1) {
-                    next = moveUpOrDownProvider.get().init("Move down", 0/*define*/, floor, cmd.getFloor());
+                    next = moveUpOrDownProvider.get().init(0/*define*/, floor, cmd.getFloor());
                 } else {
                     next = stopOpenProvider.get().init(0/*define*/, floor);
                 }
                 break;
             case PRESS_BUTTON:
                 if (floor != cmd.getFloor()) {
-                    String description = floor > cmd.getFloor() ? "Move down" : "Move up";
-                    next = moveUpOrDownProvider.get().init(description, 0/*define*/, floor, cmd.getFloor());
+                    next = moveUpOrDownProvider.get().init(0/*define*/, floor, cmd.getFloor());
                 }
                 break;
         }

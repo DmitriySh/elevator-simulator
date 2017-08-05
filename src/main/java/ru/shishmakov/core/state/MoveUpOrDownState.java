@@ -7,8 +7,8 @@ public class MoveUpOrDownState extends ElevatorState {
     protected int startFloor, goalFloor;
     protected int pastFloor;
 
-    public MoveUpOrDownState init(String description, long deadline, int startFloor, int goalFloor) {
-        super.init(description, deadline);
+    public ElevatorState init(long deadline, int startFloor, int goalFloor) {
+        super.init(startFloor > goalFloor ? "Move down" : "Move up", deadline);
         this.pastFloor = startFloor;
         this.startFloor = startFloor;
         this.goalFloor = goalFloor;
@@ -18,7 +18,7 @@ public class MoveUpOrDownState extends ElevatorState {
     /**
      * Try to move to the next state on elapsed timeout
      *
-     * @return ElevatorState - move up/down state or stop open state
+     * @return ElevatorState - current {@link MoveUpOrDownState} or {@link StopOpenState}
      */
     @Override
     public ElevatorState tryGoNext() {
@@ -30,10 +30,10 @@ public class MoveUpOrDownState extends ElevatorState {
     }
 
     /**
-     * Move up/down state could be change only by timeout
+     * Current {@link MoveUpOrDownState} could be change only by timeout
      *
      * @param cmd command
-     * @return ElevatorState - current state
+     * @return ElevatorState - current {@link MoveUpOrDownState}
      */
     @Override
     public ElevatorState applyCommand(Command cmd) {

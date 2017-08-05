@@ -8,10 +8,11 @@ import ru.shishmakov.core.Inbound;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
+import java.util.concurrent.BlockingQueue;
 
 public abstract class ElevatorState {
+    protected static final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-    protected final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
 
     protected String description;
     protected long deadline;
@@ -19,6 +20,9 @@ public abstract class ElevatorState {
     @Inject
     @Named("elevator.inbound")
     protected Inbound inbound;
+    @Inject
+    @Named("elevator.commands")
+    protected BlockingQueue<Command> elevatorCommands;
     @Inject
     protected Provider<IdleState> idleProvider;
     @Inject

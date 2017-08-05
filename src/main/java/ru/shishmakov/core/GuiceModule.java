@@ -43,8 +43,15 @@ public class GuiceModule extends AbstractModule {
 
     @Provides
     @Singleton
+    @Named("console.commands")
+    public BlockingQueue<Command> consoleCommands() {
+        return new ArrayBlockingQueue<>(128);
+    }
+
+    @Provides
+    @Singleton
     @Named("elevator.commands")
     public BlockingQueue<Command> elevatorCommands() {
-        return new ArrayBlockingQueue<>(2048);
+        return new ArrayBlockingQueue<>(1);
     }
 }

@@ -33,8 +33,8 @@ public class ConsoleService {
     @Named("elevator.executor")
     private ExecutorService executor;
     @Inject
-    @Named("elevator.commands")
-    private BlockingQueue<Command> commands;
+    @Named("console.commands")
+    private BlockingQueue<Command> consoleCommands;
     @Inject
     private Provider<ServiceController> service;
 
@@ -109,7 +109,7 @@ public class ConsoleService {
     }
 
     private void callElevator() {
-        QueueUtils.offer(commands, Command.callElevator());
+        QueueUtils.offer(consoleCommands, Command.callElevator());
     }
 
     private void pressButton(Iterator<String> it) {
@@ -117,7 +117,7 @@ public class ConsoleService {
         try {
             if (isBlank(number) || !NumberUtils.isCreatable(number)) {
                 logger.info("Could not parse your typing. Please try again...\n");
-            } else QueueUtils.offer(commands, Command.pressButton(Integer.valueOf(number)));
+            } else QueueUtils.offer(consoleCommands, Command.pressButton(Integer.valueOf(number)));
         } catch (Exception e) {
             logger.error("{} error at the time to send command\n", NAME, e);
         }
