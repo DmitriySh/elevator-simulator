@@ -37,7 +37,7 @@ public class MoveUpOrDownState extends ElevatorState {
     }
 
     @Override
-    public void print() {
+    public ElevatorState print() {
         double deltaTimeSec = TimeUnit.MILLISECONDS.toSeconds(deadline - timeController.now());
         double remainFloors = deltaTimeSec * inbound.velocity / inbound.height;
         int currentFloor = DoubleMath.roundToInt(Math.abs(startFloor > goalFloor
@@ -47,5 +47,6 @@ public class MoveUpOrDownState extends ElevatorState {
             floor = currentFloor;
             logger.info("\t{} floor", floor);
         }
+        return this;
     }
 }

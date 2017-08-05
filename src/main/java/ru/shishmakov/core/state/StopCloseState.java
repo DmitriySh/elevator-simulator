@@ -47,11 +47,11 @@ public class StopCloseState extends ElevatorState {
     }
 
     @Override
-    public void print() {
+    public ElevatorState print() {
         if (!notify) {
             notify = true;
             logger.info("\t{} floor, elevator close doors", floor);
         }
-
+        return this;
     }
 }

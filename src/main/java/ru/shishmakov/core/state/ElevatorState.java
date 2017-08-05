@@ -45,7 +45,7 @@ public abstract class ElevatorState {
 
     public abstract ElevatorState applyCommand(Command cmd);
 
-    public abstract void print();
+    public abstract ElevatorState print();
 
     public ElevatorState init(String description, long deadline, int floor) {
         checkArgument(timeController.isAfterOrNow(deadline), "deadline should be in the future time");

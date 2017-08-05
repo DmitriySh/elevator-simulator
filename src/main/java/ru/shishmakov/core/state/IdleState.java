@@ -56,10 +56,11 @@ public class IdleState extends ElevatorState {
     }
 
     @Override
-    public void print() {
+    public ElevatorState print() {
         if (!notify) {
             notify = true;
             fileLogger.info("Idle state, utc: {}", timeController.nowLocalDateTime());
         }
+        return this;
     }
 }
