@@ -29,7 +29,7 @@ dependencies {
     compile 'com.google.code.findbugs:jsr305:3.0.1'
     compile 'com.google.inject:guice:4.1.0'
     compile 'ru.vyarus:guice-ext-annotations:1.2.1'
-    compile 'org.aeonbits.owner:owner:1.0.9'
+    compile 'org.aeonbits.owner:owner-java8:1.0.9'
     compile 'com.beust:jcommander:1.72'
 
     testCompile 'org.hamcrest:hamcrest-all:1.3'
