@@ -11,14 +11,14 @@ import static org.junit.Assert.assertThat;
 public class IdleStateTest extends BaseTest {
 
     @Test
-    public void tryGoNextShouldReturnIdleState() throws Exception {
+    public void tryGoNextShouldReturnIdleState() {
         ElevatorState state = idleState.tryGoNext();
 
         assertThat("Should be Idle state", state, instanceOf(IdleState.class));
     }
 
     @Test
-    public void applyCommandShouldReturnStopOpenStateIfCommandElevatorAndFloorIsFirst() throws Exception {
+    public void applyCommandShouldReturnStopOpenStateIfCommandElevatorAndFloorIsFirst() {
         idleState.floor = 1;
         ElevatorState state = idleState.applyCommand(Command.callElevator());
 
@@ -27,7 +27,7 @@ public class IdleStateTest extends BaseTest {
     }
 
     @Test
-    public void applyCommandShouldReturnMoveUpOrDownStateIfCommandElevatorAndFloorAboveFirst() throws Exception {
+    public void applyCommandShouldReturnMoveUpOrDownStateIfCommandElevatorAndFloorAboveFirst() {
         idleState.floor = 5;
         ElevatorState state = idleState.applyCommand(Command.callElevator());
 
@@ -37,7 +37,7 @@ public class IdleStateTest extends BaseTest {
     }
 
     @Test
-    public void applyCommandShouldReturnStopOpenStateIfCommandPressButtonAndFloorTheSame() throws Exception {
+    public void applyCommandShouldReturnStopOpenStateIfCommandPressButtonAndFloorTheSame() {
         idleState.floor = 1;
         ElevatorState state = idleState.applyCommand(Command.pressButton(1));
 
@@ -46,7 +46,7 @@ public class IdleStateTest extends BaseTest {
     }
 
     @Test
-    public void applyCommandShouldReturnMoveUpOrDownStateIfCommandPressButtonAndFloorIsDifferent() throws Exception {
+    public void applyCommandShouldReturnMoveUpOrDownStateIfCommandPressButtonAndFloorIsDifferent() {
         idleState.floor = 1;
         ElevatorState state = idleState.applyCommand(Command.pressButton(5));
 

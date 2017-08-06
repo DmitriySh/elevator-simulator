@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*;
 public class StopOpenStateTest extends BaseTest {
 
     @Test
-    public void tryGoNextShouldReturnStopCloseStateIfTimeExpired() throws Exception {
+    public void tryGoNextShouldReturnStopCloseStateIfTimeExpired() {
         stopOpenState.floor = 1;
 
         ElevatorState state = stopOpenState.tryGoNext();
@@ -24,7 +24,7 @@ public class StopOpenStateTest extends BaseTest {
     }
 
     @Test
-    public void tryGoNextShouldReturnStopOpenStateIfTimeNotExpired() throws Exception {
+    public void tryGoNextShouldReturnStopOpenStateIfTimeNotExpired() {
         stopOpenState.floor = 1;
         stopOpenState.deadline = currentTime + 1;
 
@@ -36,7 +36,7 @@ public class StopOpenStateTest extends BaseTest {
     }
 
     @Test
-    public void applyCommandShouldReturnStopOpenStateIfCommandElevator() throws Exception {
+    public void applyCommandShouldReturnStopOpenStateIfCommandElevator() {
         stopOpenState.floor = 1;
 
         ElevatorState state = stopOpenState.applyCommand(Command.callElevator());
@@ -46,7 +46,7 @@ public class StopOpenStateTest extends BaseTest {
     }
 
     @Test
-    public void applyCommandShouldReturnStopOpenStateIfCommandPressButtonAndFloorTheSame() throws Exception {
+    public void applyCommandShouldReturnStopOpenStateIfCommandPressButtonAndFloorTheSame() {
         stopOpenState.floor = 1;
 
         ElevatorState state = stopOpenState.applyCommand(Command.pressButton(1));
@@ -56,7 +56,7 @@ public class StopOpenStateTest extends BaseTest {
     }
 
     @Test
-    public void applyCommandShouldReturnStopCloseStateIfCommandPressButtonAndFloorIsDifferentAndQueueCommandsIsEmpty() throws Exception {
+    public void applyCommandShouldReturnStopCloseStateIfCommandPressButtonAndFloorIsDifferentAndQueueCommandsIsEmpty() {
         stopOpenState.floor = 1;
         doReturn(true).when(elevatorCommands).isEmpty();
 
@@ -67,7 +67,7 @@ public class StopOpenStateTest extends BaseTest {
     }
 
     @Test
-    public void applyCommandShouldReturnStopOpenStateIfCommandPressButtonAndFloorIsDifferentAndQueueCommandsIsNotEmpty() throws Exception {
+    public void applyCommandShouldReturnStopOpenStateIfCommandPressButtonAndFloorIsDifferentAndQueueCommandsIsNotEmpty() {
         stopOpenState.floor = 1;
 
         ElevatorState state = stopOpenState.applyCommand(Command.pressButton(5));

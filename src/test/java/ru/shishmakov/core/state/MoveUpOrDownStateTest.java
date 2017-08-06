@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 public class MoveUpOrDownStateTest extends BaseTest {
 
     @Test
-    public void tryGoNextShouldReturnStopOpenStateIfTimeExpired() throws Exception {
+    public void tryGoNextShouldReturnStopOpenStateIfTimeExpired() {
         moveUpOrDownState.floor = 1;
         moveUpOrDownState.goalFloor = 1;
         moveUpOrDownState.startFloor = 5;
@@ -30,7 +30,7 @@ public class MoveUpOrDownStateTest extends BaseTest {
     }
 
     @Test
-    public void tryGoNextShouldReturnMoveUpOrDownStateIfTimeNotExpired() throws Exception {
+    public void tryGoNextShouldReturnMoveUpOrDownStateIfTimeNotExpired() {
         moveUpOrDownState.floor = 1;
         moveUpOrDownState.goalFloor = 1;
         moveUpOrDownState.startFloor = 5;
@@ -45,7 +45,7 @@ public class MoveUpOrDownStateTest extends BaseTest {
     }
 
     @Test
-    public void applyCommandShouldReturnMoveUpOrDownStateForAllCommands() throws Exception {
+    public void applyCommandShouldReturnMoveUpOrDownStateForAllCommands() {
         moveUpOrDownState.floor = 1;
         moveUpOrDownState.goalFloor = 1;
         moveUpOrDownState.startFloor = 5;

@@ -10,7 +10,7 @@ import static org.junit.Assert.assertNotNull;
 public class InboundTest extends BaseTest {
 
     @Test
-    public void buildInboundShouldThrowExceptionIfFloorsNumberIllegal() throws Exception {
+    public void buildInboundShouldThrowExceptionIfFloorsNumberIllegal() {
         String[] args = {"-n", "1", "-h", "4", "-v", "2", "-d", "10"};
 
         Assertions.assertThatExceptionThrownBy(() -> {
@@ -20,7 +20,7 @@ public class InboundTest extends BaseTest {
     }
 
     @Test
-    public void buildInboundShouldThrowExceptionIfFloorHeightIllegal() throws Exception {
+    public void buildInboundShouldThrowExceptionIfFloorHeightIllegal() {
         String[] args = {"-n", "15", "-h", "40", "-v", "2", "-d", "10"};
 
         Assertions.assertThatExceptionThrownBy(() -> {
@@ -30,7 +30,7 @@ public class InboundTest extends BaseTest {
     }
 
     @Test
-    public void buildInboundShouldThrowExceptionIfElevatorVelocityIllegal() throws Exception {
+    public void buildInboundShouldThrowExceptionIfElevatorVelocityIllegal() {
         String[] args = {"-n", "15", "-h", "4", "-v", "20", "-d", "10"};
 
         Assertions.assertThatExceptionThrownBy(() -> {
@@ -40,7 +40,7 @@ public class InboundTest extends BaseTest {
     }
 
     @Test
-    public void buildInboundShouldThrowExceptionIfTimeBetweenOpenAndCloseElevatorDoorIllegal() throws Exception {
+    public void buildInboundShouldThrowExceptionIfTimeBetweenOpenAndCloseElevatorDoorIllegal() {
         String[] args = {"-n", "15", "-h", "4", "-v", "2", "-d", "50"};
 
         Assertions.assertThatExceptionThrownBy(() -> {
@@ -51,7 +51,7 @@ public class InboundTest extends BaseTest {
     }
 
     @Test
-    public void buildInboundShouldBuildValidObject() throws Exception {
+    public void buildInboundShouldBuildValidObject() {
         int number = 15;
         int floorHeight = 4;
         int velocity = 2;

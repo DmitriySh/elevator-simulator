@@ -9,7 +9,7 @@ import static org.junit.Assert.assertTrue;
 public class ElevatorConfigTest extends BaseTest {
 
     @Test
-    public void configShouldHasValues() throws Exception {
+    public void configShouldHasValues() {
         ElevatorConfig config = ConfigFactory.create(ElevatorConfig.class);
 
         assertTrue("Elevator interval value should be positive", config.elevatorIntervalMs() > 0);
