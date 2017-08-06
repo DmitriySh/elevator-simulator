@@ -20,6 +20,8 @@ import ru.shishmakov.core.state.StopOpenState;
 import javax.inject.Provider;
 import java.util.concurrent.BlockingQueue;
 
+import static org.mockito.Mockito.doReturn;
+
 /**
  * Base class for JUnit test classes.
  *
@@ -67,8 +69,14 @@ public abstract class BaseTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         logTestStart();
+        MockitoAnnotations.initMocks(this);
+
+        doReturn(currentTime).when(timeController).now();
+        doReturn(idleState).when(idleProvider).get();
+        doReturn(moveUpOrDownState).when(moveUpOrDownProvider).get();
+        doReturn(stopOpenState).when(stopOpenProvider).get();
+        doReturn(stopCloseState).when(stopCloseProvider).get();
     }
 
     private void logTestStart() {

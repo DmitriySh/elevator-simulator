@@ -1,6 +1,5 @@
 package ru.shishmakov.core.state;
 
-import org.junit.Before;
 import org.junit.Test;
 import ru.shishmakov.BaseTest;
 import ru.shishmakov.core.Command;
@@ -8,21 +7,8 @@ import ru.shishmakov.core.Command;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doReturn;
 
 public class IdleStateTest extends BaseTest {
-
-    @Before
-    @Override
-    public void setUp() {
-        super.setUp();
-
-        doReturn(currentTime).when(timeController).now();
-        doReturn(idleState).when(idleProvider).get();
-        doReturn(moveUpOrDownState).when(moveUpOrDownProvider).get();
-        doReturn(stopOpenState).when(stopOpenProvider).get();
-        doReturn(stopCloseState).when(stopCloseProvider).get();
-    }
 
     @Test
     public void tryGoNextShouldReturnIdleState() throws Exception {
