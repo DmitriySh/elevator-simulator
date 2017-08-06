@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author <a href="mailto:d.shishmakov@corp.nekki.ru">Shishmakov Dmitriy</a>
  */
 public class Inbound {
-    public static final Range<Integer> FLOORS = Range.closed(5, 100);
+    public static final Range<Integer> FLOORS = Range.closed(5, 20);
 
     @Parameter(names = {"-n"}, description = "Number of floors", required = true)
     public int number;
