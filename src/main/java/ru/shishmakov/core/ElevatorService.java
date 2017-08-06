@@ -2,6 +2,7 @@ package ru.shishmakov.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.shishmakov.config.ElevatorConfig;
 import ru.shishmakov.core.state.ElevatorState;
 import ru.shishmakov.util.QueueUtils;
 import ru.shishmakov.util.Threads;
@@ -37,6 +38,8 @@ public class ElevatorService {
     @Inject
     @Named("console.commands")
     private BlockingQueue<Command> consoleCommands;
+    @Inject
+    private ElevatorConfig config;
 
     public void start() {
         logger.info("{} starting...", NAME);
@@ -68,13 +71,13 @@ public class ElevatorService {
 
     private void process() {
         while (watcherState.get() && !Thread.currentThread().isInterrupted()) {
-            Threads.sleepWithInterruptedAfterTimeout(250, MILLISECONDS);// TODO: 05.08.17 use TimeConfig
+            Threads.sleepWithInterruptedAfterTimeout(config.elevatorIntervalMs(), MILLISECONDS);
 
             if (!consoleCommands.isEmpty()) {
                 fileLogger.info("command: {}", consoleCommands.peek().getDescription());
             }
             state = state.tryGoNext();
-            state = QueueUtils.poll(consoleCommands, 1, 20, MILLISECONDS)
+            state = QueueUtils.poll(consoleCommands, 1, config.queueReadDelay(), MILLISECONDS)
                     .map(state::applyCommand)
                     .orElse(state)
                     .print();

@@ -3,6 +3,8 @@ package ru.shishmakov.core;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Names;
+import org.aeonbits.owner.ConfigFactory;
+import ru.shishmakov.config.ElevatorConfig;
 import ru.shishmakov.core.state.ElevatorState;
 import ru.shishmakov.core.state.IdleState;
 import ru.vyarus.guice.ext.ExtAnnotationsModule;
@@ -53,5 +55,11 @@ public class GuiceModule extends AbstractModule {
     @Named("elevator.commands")
     public BlockingQueue<Command> elevatorCommands() {
         return new ArrayBlockingQueue<>(1);
+    }
+
+    @Provides
+    @Singleton
+    public ElevatorConfig elevatorConfig() {
+        return ConfigFactory.create(ElevatorConfig.class);
     }
 }
