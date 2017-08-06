@@ -10,6 +10,9 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class MoveUpOrDownStateTest extends BaseTest {
 
@@ -23,6 +26,7 @@ public class MoveUpOrDownStateTest extends BaseTest {
 
         assertThat("Should be StopOpen state", state, instanceOf(StopOpenState.class));
         assertEquals("Floor should be the same", moveUpOrDownState.floor, state.floor);
+        verify(timeController, times(1)).isTimeExpired(anyLong());
     }
 
     @Test
@@ -37,6 +41,7 @@ public class MoveUpOrDownStateTest extends BaseTest {
         assertThat("Should be MoveUpOrDown state", state, instanceOf(MoveUpOrDownState.class));
         assertEquals("Floor should be the same", moveUpOrDownState.floor, state.floor);
         assertEquals("Goal floor should be the same", moveUpOrDownState.goalFloor, ((MoveUpOrDownState) state).goalFloor);
+        verify(timeController, times(1)).isTimeExpired(anyLong());
     }
 
     @Test
