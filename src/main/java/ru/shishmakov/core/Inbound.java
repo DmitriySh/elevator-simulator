@@ -11,16 +11,18 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author <a href="mailto:d.shishmakov@corp.nekki.ru">Shishmakov Dmitriy</a>
  */
 public class Inbound {
+    public static final Range<Integer> FLOORS = Range.closed(5, 20);
+
     @Parameter(names = {"-n"}, description = "Number of floors", required = true)
     public int number;
 
     @Parameter(names = {"-h"}, description = "Height of floor", required = true)
     public int height;
 
-    @Parameter(names = {"-v"}, description = "Velocity of elevator", required = true)
+    @Parameter(names = {"-v"}, description = "Velocity of elevator in m/sec", required = true)
     public int velocity;
 
-    @Parameter(names = {"-d"}, description = "Duration of time between the opening and closing elevator door", required = true)
+    @Parameter(names = {"-d"}, description = "Duration of time sec between the opening and closing elevator door", required = true)
     public int door;
 
     private Inbound() {
@@ -33,11 +35,10 @@ public class Inbound {
     }
 
     private Inbound validate() {
-        Range<Integer> floors = Range.closed(5, 20);
-        Range<Integer> heights = Range.closed(1, 20);
+        Range<Integer> heights = Range.closed(1, 10);
         Range<Integer> velocities = Range.closed(1, 10);
-        Range<Integer> doorTimes = Range.closed(1, 20);
-        checkArgument(floors.contains(number), "Number of floors: %s should be in range %s", number, floors);
+        Range<Integer> doorTimes = Range.closed(2, 20);
+        checkArgument(FLOORS.contains(number), "Number of floors: %s should be in range %s", number, FLOORS);
         checkArgument(heights.contains(height), "Height of floor: %s should be in range %s m", height, heights);
         checkArgument(velocities.contains(velocity), "Velocity of elevator: %s should be in range %s m/s", velocity, velocities);
         checkArgument(doorTimes.contains(door),

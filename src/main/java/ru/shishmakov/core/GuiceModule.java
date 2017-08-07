@@ -3,6 +3,10 @@ package ru.shishmakov.core;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Names;
+import org.aeonbits.owner.ConfigFactory;
+import ru.shishmakov.config.ElevatorConfig;
+import ru.shishmakov.core.state.ElevatorState;
+import ru.shishmakov.core.state.IdleState;
 import ru.vyarus.guice.ext.ExtAnnotationsModule;
 
 import javax.inject.Named;
@@ -29,6 +33,7 @@ public class GuiceModule extends AbstractModule {
     protected void configure() {
         binder().install(new ExtAnnotationsModule());
         binder().bind(Inbound.class).annotatedWith(Names.named("elevator.inbound")).toInstance(inbound);
+        binder().bind(ElevatorState.class).annotatedWith(Names.named("elevator.startState")).to(IdleState.class);
     }
 
     @Provides
@@ -40,8 +45,21 @@ public class GuiceModule extends AbstractModule {
 
     @Provides
     @Singleton
+    @Named("console.commands")
+    public BlockingQueue<Command> consoleCommands() {
+        return new ArrayBlockingQueue<>(128);
+    }
+
+    @Provides
+    @Singleton
     @Named("elevator.commands")
     public BlockingQueue<Command> elevatorCommands() {
-        return new ArrayBlockingQueue<>(2048);
+        return new ArrayBlockingQueue<>(1);
+    }
+
+    @Provides
+    @Singleton
+    public ElevatorConfig elevatorConfig() {
+        return ConfigFactory.create(ElevatorConfig.class);
     }
 }

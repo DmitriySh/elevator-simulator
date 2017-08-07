@@ -2,8 +2,8 @@ package ru.shishmakov.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.shishmakov.config.ElevatorConfig;
 import ru.shishmakov.core.state.ElevatorState;
-import ru.shishmakov.core.state.IdleState;
 import ru.shishmakov.util.QueueUtils;
 import ru.shishmakov.util.Threads;
 
@@ -29,17 +29,17 @@ public class ElevatorService {
     /**
      * Current elevator state
      */
-    private volatile ElevatorState round = new IdleState(1);
-
+    @Inject
+    @Named("elevator.startState")
+    private ElevatorState state;
     @Inject
     @Named("elevator.executor")
     private ExecutorService executor;
     @Inject
-    @Named("elevator.commands")
-    private BlockingQueue<Command> commands;
+    @Named("console.commands")
+    private BlockingQueue<Command> consoleCommands;
     @Inject
-    @Named("elevator.inbound")
-    private Inbound inbound;
+    private ElevatorConfig config;
 
     public void start() {
         logger.info("{} starting...", NAME);
@@ -71,10 +71,16 @@ public class ElevatorService {
 
     private void process() {
         while (watcherState.get() && !Thread.currentThread().isInterrupted()) {
-            Threads.sleepWithInterruptedAfterTimeout(500, MILLISECONDS);
-//            logger.debug("commands: {}", commands);
-            if (commands.isEmpty()) continue;
-            QueueUtils.poll(commands).ifPresent(c -> logger.info("command: {}", c.getDescription()));
+            Threads.sleepWithInterruptedAfterTimeout(config.elevatorIntervalMs(), MILLISECONDS);
+
+            if (!consoleCommands.isEmpty()) {
+                fileLogger.info("command: {}", consoleCommands.peek().getDescription());
+            }
+            state = state.tryGoNext();
+            state = QueueUtils.poll(consoleCommands, 1, config.queueReadDelay(), MILLISECONDS)
+                    .map(state::applyCommand)
+                    .orElse(state)
+                    .print();
         }
     }
 

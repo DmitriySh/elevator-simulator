@@ -1,42 +1,52 @@
 package ru.shishmakov.core.state;
 
+import com.google.common.math.DoubleMath;
 import ru.shishmakov.core.Command;
 
-public class MoveUpOrDownState extends ElevatorState {
-    protected final int startFloor, goalFloor;
-    protected int pastFloor;
+import java.util.concurrent.TimeUnit;
 
-    public MoveUpOrDownState(String description, long deadline, int startFloor, int goalFloor) {
-        super(description, deadline);
-        this.pastFloor = startFloor;
-        this.startFloor = startFloor;
-        this.goalFloor = goalFloor;
-    }
+import static java.math.RoundingMode.HALF_UP;
+
+public class MoveUpOrDownState extends ElevatorState {
+    int startFloor, goalFloor;
 
     /**
      * Try to move to the next state on elapsed timeout
      *
-     * @return ElevatorState - move up/down/stop state
+     * @return ElevatorState - current {@link MoveUpOrDownState} or {@link StopOpenState}
      */
     @Override
-    protected ElevatorState nextState() {
-        return null;
+    public ElevatorState tryGoNext() {
+        ElevatorState state = this;
+        if (timeController.isTimeExpired(deadline)) {
+            state = buildStopOpenState(goalFloor);
+        }
+        return state;
     }
 
     /**
-     * Move up/down state could be change only by timeout
+     * Current {@link MoveUpOrDownState} could be change only by timeout
      *
      * @param cmd command
-     * @return ElevatorState - current state
+     * @return ElevatorState - current {@link MoveUpOrDownState}
      */
     @Override
-    protected ElevatorState applyCommand(Command cmd) {
+    public ElevatorState applyCommand(Command cmd) {
         // do nothing
         return this;
     }
 
     @Override
-    protected void print() {
-
+    public ElevatorState print() {
+        double deltaTimeSec = TimeUnit.MILLISECONDS.toSeconds(deadline - timeController.now());
+        double remainFloors = deltaTimeSec * inbound.velocity / inbound.height;
+        int currentFloor = DoubleMath.roundToInt(Math.abs(startFloor > goalFloor
+                ? goalFloor + remainFloors
+                : goalFloor - remainFloors), HALF_UP);
+        if (currentFloor != floor) {
+            floor = currentFloor;
+            logger.info("\t{} floor", floor);
+        }
+        return this;
     }
 }

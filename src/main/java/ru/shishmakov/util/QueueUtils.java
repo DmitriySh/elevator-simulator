@@ -33,7 +33,7 @@ public final class QueueUtils {
     /**
      * @return item from the queue
      */
-    public static <T> Optional<T> poll(BlockingQueue<T> queue, int times, int delay, TimeUnit unit) {
+    public static <T> Optional<T> poll(BlockingQueue<T> queue, int times, long delay, TimeUnit unit) {
         try {
             T item = null;
             while (times-- > 0 && (item = queue.poll(delay, unit)) == null) {
@@ -50,7 +50,7 @@ public final class QueueUtils {
     /**
      * @return true - if item inserted successfully, false otherwise
      */
-    public static <T> boolean offer(BlockingQueue<T> queue, T item, int times, int delay, TimeUnit unit) {
+    public static <T> boolean offer(BlockingQueue<T> queue, T item, int times, long delay, TimeUnit unit) {
         try {
             boolean success = false;
             while (--times > 0 && !(success = queue.offer(item, delay, unit))) {

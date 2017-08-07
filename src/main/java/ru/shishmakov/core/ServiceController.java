@@ -3,7 +3,7 @@ package ru.shishmakov.core;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.shishmakov.util.LifeCycle;
+import ru.shishmakov.config.ElevatorConfig;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static ru.shishmakov.util.LifeCycle.*;
+import static ru.shishmakov.core.LifeCycle.*;
 import static ru.shishmakov.util.Threads.*;
 
 /**
@@ -38,6 +38,8 @@ public class ServiceController {
     private ConsoleService consoleService;
     @Inject
     private ElevatorService elevatorService;
+    @Inject
+    private ElevatorConfig config;
 
     @PostConstruct
     public void setUp() {
@@ -91,7 +93,7 @@ public class ServiceController {
         fileLogger.info("{} thread: {} await the state: {} to stop itself", NAME, Thread.currentThread(), IDLE);
         for (long count = 0; LifeCycle.isNotIdle(SERVICE_STATE.get()); count++) {
             if (count % 100 == 0) fileLogger.debug("Thread: {} is alive", Thread.currentThread());
-            sleepWithoutInterruptedAfterTimeout(100, MILLISECONDS);
+            sleepWithoutInterruptedAfterTimeout(config.mainIntervalMs(), MILLISECONDS);
         }
     }
 

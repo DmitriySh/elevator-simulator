@@ -2,24 +2,26 @@ package ru.shishmakov.core.state;
 
 import ru.shishmakov.core.Command;
 
+import javax.annotation.PostConstruct;
+
 /**
  * The elevator without a passenger with closed door
  */
 public class IdleState extends ElevatorState {
-    private final int floor;
+    private boolean notify;
 
-    public IdleState(int floor) {
-        super("Idle", Long.MAX_VALUE);
-        this.floor = floor;
+    @PostConstruct
+    public void setUp() {
+        this.floor = 1;
     }
 
     /**
-     * Idle state could be change only by command
+     * Current {@link IdleState} could be change only by command
      *
-     * @return ElevatorState - current state
+     * @return ElevatorState - current {@link IdleState}
      */
     @Override
-    protected ElevatorState nextState() {
+    public ElevatorState tryGoNext() {
         // do nothing
         return this;
     }
@@ -28,28 +30,27 @@ public class IdleState extends ElevatorState {
      * Try to move to the next state
      *
      * @param cmd command
-     * @return ElevatorState - idle or move up/down state
+     * @return ElevatorState - {@link MoveUpOrDownState} or {@link StopOpenState}
      */
     @Override
-    protected ElevatorState applyCommand(Command cmd) {
+    public ElevatorState applyCommand(Command cmd) {
         ElevatorState next = this;
         switch (cmd.getType()) {
             default:
-            case BLANK:
                 // do nothing
                 break;
             case CALL_ELEVATOR:
                 if (floor > 1) {
-                    next = new MoveUpOrDownState("Move Down", 0/*define*/, floor, cmd.getFloor());
-                }
-                if (floor == 1) {
-                    next = new StopOpenState(0/*define*/, floor);
+                    next = buildMoveUpOrDownState(floor, cmd.getFloor());
+                } else {
+                    next = buildStopOpenState(floor);
                 }
                 break;
             case PRESS_BUTTON:
-                if (floor != cmd.getFloor()) {
-                    String description = floor > cmd.getFloor() ? "Move Down state" : "Move Up";
-                    next = new MoveUpOrDownState(description, 0/*define*/, floor, cmd.getFloor());
+                if (floor == cmd.getFloor()) {
+                    next = buildStopOpenState(floor);
+                } else {
+                    next = buildMoveUpOrDownState(floor, cmd.getFloor());
                 }
                 break;
         }
@@ -57,7 +58,11 @@ public class IdleState extends ElevatorState {
     }
 
     @Override
-    protected void print() {
-        fileLogger.info("Idle state, timestamp: {}", System.currentTimeMillis());
+    public ElevatorState print() {
+        if (!notify) {
+            notify = true;
+            fileLogger.info("Idle state, utc: {}", timeController.nowLocalDateTime());
+        }
+        return this;
     }
 }
