@@ -61,8 +61,8 @@ public class ServiceController {
             return this;
         }
         SERVICE_STATE.set(INIT);
-        consoleService.start();
         elevatorService.start();
+        consoleService.start();
         assignThreadHook(this::stop, "service-main-hook-thread");
 
         SERVICE_STATE.set(RUN);
@@ -80,8 +80,8 @@ public class ServiceController {
 
         try {
             SERVICE_STATE.set(STOPPING);
-            consoleService.stop();
             elevatorService.stop();
+            consoleService.stop();
             stopExecutors();
         } finally {
             SERVICE_STATE.set(IDLE);
