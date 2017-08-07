@@ -7,9 +7,17 @@ The `elevator simulator` has a set of commands and users can interact with it fr
 Powered by: `Java SE` and `Guice`. 
 Project uses blocking queues in case of threading model: incoming commands help to connect 
 different threads.
+
+
+
+## Requirements:
+
+  * Java SE Development Kit 8 (or newer)  
+  * Gradle 2.x (or you could use Gradle wrapper)   
+  * Git 1.7.x (or newer) 
   
-  
-  
+
+
 ## Rules:  
 
   * Run program (use `./scripts/start_elevator.sh`).
@@ -98,14 +106,6 @@ elevator-simulator/scripts$ tree --charset unicode
 
 1 directory, 2 files
 ```  
-
-
-  
-## Requirements:
-
-  * Java SE Development Kit 8 (or newer)  
-  * Gradle 2.x (or you could use Gradle wrapper)   
-  * Git 1.7.x (or newer)  
 
 
 
