@@ -20,6 +20,7 @@ public class IdleStateTest extends BaseTest {
     @Test
     public void applyCommandShouldReturnStopOpenStateIfCommandElevatorAndFloorIsFirst() {
         idleState.floor = 1;
+
         ElevatorState state = idleState.applyCommand(Command.callElevator());
 
         assertThat("Should be StopOpen state", state, instanceOf(StopOpenState.class));
@@ -29,6 +30,7 @@ public class IdleStateTest extends BaseTest {
     @Test
     public void applyCommandShouldReturnMoveUpOrDownStateIfCommandElevatorAndFloorAboveFirst() {
         idleState.floor = 5;
+
         ElevatorState state = idleState.applyCommand(Command.callElevator());
 
         assertThat("Should be MoveUpOrDownState state", state, instanceOf(MoveUpOrDownState.class));
@@ -39,6 +41,7 @@ public class IdleStateTest extends BaseTest {
     @Test
     public void applyCommandShouldReturnStopOpenStateIfCommandPressButtonAndFloorTheSame() {
         idleState.floor = 1;
+
         ElevatorState state = idleState.applyCommand(Command.pressButton(1));
 
         assertThat("Should be StopOpen state", state, instanceOf(StopOpenState.class));
@@ -48,6 +51,7 @@ public class IdleStateTest extends BaseTest {
     @Test
     public void applyCommandShouldReturnMoveUpOrDownStateIfCommandPressButtonAndFloorIsDifferent() {
         idleState.floor = 1;
+
         ElevatorState state = idleState.applyCommand(Command.pressButton(5));
 
         assertThat("Should be MoveUpOrDownState state", state, instanceOf(MoveUpOrDownState.class));
