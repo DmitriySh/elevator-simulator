@@ -139,7 +139,7 @@ ServiceController started, state: RUN
 
 ## Stop
 
-  * `Elevator simulator` is terminated by command `\q` or response to a user interrupt, such as typing `^C` (Ctrl + C), or a system-wide event of shutdown.  
+  * `Elevator simulator` is terminated by command `/q` or response to a user interrupt, such as typing `^C` (Ctrl + C), or a system-wide event of shutdown.  
 ```sh
 /q
 ServiceController stopping...
