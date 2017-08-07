@@ -19,8 +19,8 @@ $ java -jar elevator-simulator-all-*.jar -n 15 -h 4 -v 2 -d 5
 ```text
 -n = max number of floors [5..20]
 -h = height of floor [1..10]
--v = Velocity of elevator in m/sec [1..10]
--d = Duration of time sec between the opening and closing elevator door [2..20]
+-v = Velocity of elevator [1..10] m/sec
+-d = Duration of time between the opening and closing elevator door [2..20] sec
 ```   
 
   * Choose command: (`/h - help`).
