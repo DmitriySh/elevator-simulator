@@ -3,6 +3,8 @@ package ru.shishmakov.core.state;
 import ru.shishmakov.core.Command;
 import ru.shishmakov.util.QueueUtils;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 public class StopCloseState extends ElevatorState {
     private boolean notify;
 
@@ -15,7 +17,8 @@ public class StopCloseState extends ElevatorState {
     public ElevatorState tryGoNext() {
         ElevatorState state = this;
         if (timeController.isTimeExpired(deadline)) {
-            state = QueueUtils.poll(elevatorCommands)
+            state = QueueUtils.poll(elevatorCommands, 1, config.queueReadDelay(), MILLISECONDS)
+                    .filter(Command::isPressButton)
                     .map(cmd -> buildMoveUpOrDownState(floor, cmd.getFloor()))
                     .orElse(buildIdleState(floor));
         }
@@ -41,7 +44,7 @@ public class StopCloseState extends ElevatorState {
             case PRESS_BUTTON:
                 if (elevatorCommands.isEmpty()) {
                     if (cmd.getFloor() == floor) next = buildStopOpenState(floor);
-                    else QueueUtils.offer(elevatorCommands, cmd);
+                    else elevatorCommands.offer(cmd);
                 }
                 break;
         }

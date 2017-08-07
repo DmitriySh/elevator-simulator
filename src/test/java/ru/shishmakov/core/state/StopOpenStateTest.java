@@ -8,7 +8,8 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class StopOpenStateTest extends BaseTest {
 
@@ -56,9 +57,8 @@ public class StopOpenStateTest extends BaseTest {
     }
 
     @Test
-    public void applyCommandShouldReturnStopCloseStateIfCommandPressButtonAndFloorIsDifferentAndQueueCommandsIsEmpty() {
+    public void applyCommandShouldReturnStopCloseStateIfCommandPressButtonAndFloorIsDifferentAndCommandsQueueIsEmpty() {
         stopOpenState.floor = 1;
-        doReturn(true).when(elevatorCommands).isEmpty();
 
         ElevatorState state = stopOpenState.applyCommand(Command.pressButton(5));
 
@@ -67,8 +67,9 @@ public class StopOpenStateTest extends BaseTest {
     }
 
     @Test
-    public void applyCommandShouldReturnStopOpenStateIfCommandPressButtonAndFloorIsDifferentAndQueueCommandsIsNotEmpty() {
+    public void applyCommandShouldReturnStopOpenStateIfCommandPressButtonAndFloorIsDifferentAndCommandsQueueIsNotEmpty() {
         stopOpenState.floor = 1;
+        elevatorCommands.offer(Command.callElevator());
 
         ElevatorState state = stopOpenState.applyCommand(Command.pressButton(5));
 

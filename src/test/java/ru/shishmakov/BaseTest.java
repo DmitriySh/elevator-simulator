@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.shishmakov.config.ElevatorConfig;
 import ru.shishmakov.core.Command;
 import ru.shishmakov.core.Inbound;
 import ru.shishmakov.core.TimeController;
@@ -18,6 +19,7 @@ import ru.shishmakov.core.state.StopCloseState;
 import ru.shishmakov.core.state.StopOpenState;
 
 import javax.inject.Provider;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import static org.mockito.Mockito.doReturn;
@@ -52,7 +54,10 @@ public abstract class BaseTest {
     @Spy
     protected Inbound inbound = Inbound.buildInbound(new String[]{"-n", "15", "-h", "4", "-v", "2", "-d", "10"});
     @Spy
+    protected BlockingQueue<Command> elevatorCommands = new ArrayBlockingQueue<>(1);
+    @Spy
     protected TimeController timeController;
+
     @Mock(name = "idleProvider")
     protected Provider<IdleState> idleProvider;
     @Mock(name = "moveUpOrDownProvider")
@@ -62,7 +67,7 @@ public abstract class BaseTest {
     @Mock(name = "stopOpenProvider")
     protected Provider<StopOpenState> stopOpenProvider;
     @Mock
-    protected BlockingQueue<Command> elevatorCommands;
+    protected ElevatorConfig config;
 
     @Rule
     public TestName testName = new TestName();

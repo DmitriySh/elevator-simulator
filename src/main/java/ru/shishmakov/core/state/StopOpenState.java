@@ -1,7 +1,6 @@
 package ru.shishmakov.core.state;
 
 import ru.shishmakov.core.Command;
-import ru.shishmakov.util.QueueUtils;
 
 public class StopOpenState extends ElevatorState {
     private boolean notify;
@@ -39,7 +38,7 @@ public class StopOpenState extends ElevatorState {
                 break;
             case PRESS_BUTTON:
                 if (elevatorCommands.isEmpty() && cmd.getFloor() != floor) {
-                    QueueUtils.offer(elevatorCommands, cmd);
+                    elevatorCommands.offer(cmd);
                     next = buildStopClose(floor);
                 }
                 break;

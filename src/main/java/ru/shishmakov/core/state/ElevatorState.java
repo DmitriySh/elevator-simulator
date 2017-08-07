@@ -3,6 +3,7 @@ package ru.shishmakov.core.state;
 import com.google.common.base.MoreObjects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.shishmakov.config.ElevatorConfig;
 import ru.shishmakov.core.Command;
 import ru.shishmakov.core.Inbound;
 import ru.shishmakov.core.TimeController;
@@ -32,6 +33,8 @@ public abstract class ElevatorState {
     protected BlockingQueue<Command> elevatorCommands;
     @Inject
     protected TimeController timeController;
+    @Inject
+    protected ElevatorConfig config;
     @Inject
     private Provider<IdleState> idleProvider;
     @Inject

@@ -6,7 +6,6 @@ import com.google.inject.Singleton;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.shishmakov.util.QueueUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -112,14 +111,14 @@ public class ConsoleService {
     }
 
     private void callElevator() {
-        QueueUtils.offer(consoleCommands, Command.callElevator());
+        consoleCommands.offer(Command.callElevator());
     }
 
     private void pressButton(Iterator<String> it) {
         final String source = it.hasNext() ? it.next() : EMPTY;
         try {
             if (isValidateNumber(source)) {
-                QueueUtils.offer(consoleCommands, Command.pressButton(Integer.valueOf(source)));
+                consoleCommands.offer(Command.pressButton(Integer.valueOf(source)));
             } else logger.info("Your floor number is not valid. Please try again...\n");
         } catch (Exception e) {
             logger.error("{} error at the time to send command\n", NAME, e);
