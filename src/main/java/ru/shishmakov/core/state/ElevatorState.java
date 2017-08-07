@@ -50,7 +50,7 @@ public abstract class ElevatorState {
 
     public abstract ElevatorState print();
 
-    public ElevatorState init(String description, long deadline, int floor) {
+    protected ElevatorState init(String description, long deadline, int floor) {
         checkArgument(timeController.isAfterOrNow(deadline), "deadline should be in the future time");
         checkArgument(floor > 0, "floor should be positive value");
         this.description = description;
@@ -59,13 +59,13 @@ public abstract class ElevatorState {
         return this;
     }
 
-    public ElevatorState buildIdleState(int floor) {
+    protected ElevatorState buildIdleState(int floor) {
         IdleState state = idleProvider.get();
         state.init("Idle", Long.MAX_VALUE, floor);
         return state;
     }
 
-    public ElevatorState buildMoveUpOrDownState(int startFloor, int goalFloor) {
+    protected ElevatorState buildMoveUpOrDownState(int startFloor, int goalFloor) {
         int deltaFloor = Math.abs(goalFloor - startFloor);
         long deadline = timeController.nowPlus((deltaFloor * inbound.height) / inbound.velocity, SECONDS);
         MoveUpOrDownState state = moveUpOrDownProvider.get();
@@ -74,14 +74,14 @@ public abstract class ElevatorState {
         return state.init(startFloor > goalFloor ? "Move down" : "Move up", deadline, startFloor);
     }
 
-    public ElevatorState buildStopOpenState(int floor) {
+    protected ElevatorState buildStopOpenState(int floor) {
         long doorMillis = inbound.door * 1000;
         long deadline = timeController.nowPlus(doorMillis - (doorMillis / 3), MILLIS);
         StopOpenState state = stopOpenProvider.get();
         return state.init("Stop open", deadline, floor);
     }
 
-    public ElevatorState buildStopClose(int floor) {
+    protected ElevatorState buildStopClose(int floor) {
         long deadline = timeController.nowPlus((inbound.door * 1000) / 3, MILLIS);
         StopCloseState state = stopCloseProvider.get();
         return state.init("Stop close", deadline, floor);
