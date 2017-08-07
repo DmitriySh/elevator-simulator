@@ -86,7 +86,7 @@ Your floor number is not valid. Please try again...
                                                --------------
 ```    
   
-  * Use command `/q` or `^C` (Ctrl + C) to end the session
+  * Use command `/q` or `^C` (Ctrl + C) to end the session.
   
   * `Elevator simulator` writes a separate log file `client.log`.
 ```bash
