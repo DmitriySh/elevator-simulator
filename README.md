@@ -25,6 +25,7 @@ $ java -jar elevator-simulator-all-*.jar -n 15 -h 4 -v 2 -d 5
 
   * Choose command: (`/h - help`).
 ```bash  
+/h
 	h - help
 	You see current message
 
