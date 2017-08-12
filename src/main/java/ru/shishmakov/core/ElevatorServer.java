@@ -1,6 +1,5 @@
 package ru.shishmakov.core;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,7 @@ public class ElevatorServer {
     private static final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
 
     private static final String NAME = MethodHandles.lookup().lookupClass().getSimpleName();
-    final AtomicReference<LifeCycle> SERVICE_STATE = new AtomicReference<>(IDLE);
+    private final AtomicReference<LifeCycle> SERVICE_STATE = new AtomicReference<>(IDLE);
 
     @Inject
     @Named("elevator.executor")
@@ -98,8 +97,7 @@ public class ElevatorServer {
         }
     }
 
-    @VisibleForTesting
-    AtomicReference<LifeCycle> getServiceState() {
+    protected AtomicReference<LifeCycle> getServiceState() {
         return SERVICE_STATE;
     }
 
