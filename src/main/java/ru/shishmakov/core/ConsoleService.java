@@ -38,7 +38,7 @@ public class ConsoleService {
     @Named("console.commands")
     private BlockingQueue<Command> consoleCommands;
     @Inject
-    private Provider<ServiceController> service;
+    private Provider<ElevatorServer> service;
 
     private final AtomicBoolean watcherState = new AtomicBoolean(true);
 

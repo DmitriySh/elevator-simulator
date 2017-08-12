@@ -1,5 +1,6 @@
 package ru.shishmakov.core;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.MoreExecutors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +25,12 @@ import static ru.shishmakov.util.Threads.*;
  * @author Dmitriy Shishmakov on 31.07.17
  */
 @Singleton
-public class ServiceController {
+public class ElevatorServer {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
 
     private static final String NAME = MethodHandles.lookup().lookupClass().getSimpleName();
-    private static final AtomicReference<LifeCycle> SERVICE_STATE = new AtomicReference<>(IDLE);
+    final AtomicReference<LifeCycle> SERVICE_STATE = new AtomicReference<>(IDLE);
 
     @Inject
     @Named("elevator.executor")
@@ -51,7 +52,7 @@ public class ServiceController {
         logger.info("----- // -----    {} STOP {}    ----- // -----\nBuy!", NAME, LocalDateTime.now());
     }
 
-    public ServiceController start() {
+    public ElevatorServer start() {
         logger.info("{} starting...", NAME);
         Thread.currentThread().setName("service-main");
 
@@ -95,6 +96,11 @@ public class ServiceController {
             if (count % 100 == 0) fileLogger.debug("Thread: {} is alive", Thread.currentThread());
             sleepWithoutInterruptedAfterTimeout(config.mainIntervalMs(), MILLISECONDS);
         }
+    }
+
+    @VisibleForTesting
+    AtomicReference<LifeCycle> getServiceState() {
+        return SERVICE_STATE;
     }
 
     private void stopExecutors() {
