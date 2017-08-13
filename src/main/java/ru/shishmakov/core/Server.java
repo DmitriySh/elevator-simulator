@@ -53,7 +53,7 @@ public class Server {
 
     public Server start() {
         logger.info("{} starting...", NAME);
-        Thread.currentThread().setName("service-main");
+        Thread.currentThread().setName("server-main");
 
         final LifeCycle state = SERVICE_STATE.get();
         if (LifeCycle.isNotIdle(state)) {
@@ -63,7 +63,7 @@ public class Server {
         SERVICE_STATE.set(INIT);
         elevatorService.start();
         consoleService.start();
-        assignThreadHook(this::stop, "service-main-hook-thread");
+        assignThreadHook(this::stop, "server-main-hook-thread");
 
         SERVICE_STATE.set(RUN);
         logger.info("{} started, state: {}", NAME, SERVICE_STATE.get());
