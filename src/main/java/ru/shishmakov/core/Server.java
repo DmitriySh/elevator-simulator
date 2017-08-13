@@ -40,6 +40,8 @@ public class Server {
     private ElevatorService elevatorService;
     @Inject
     private ElevatorConfig config;
+    @Inject
+    private Inbound inbound;
 
     @PostConstruct
     public void setUp() {
@@ -60,6 +62,8 @@ public class Server {
             logger.warn("Warning! {} already started, state: {}", NAME, state);
             return this;
         }
+        inbound.validate(config);
+
         SERVICE_STATE.set(INIT);
         elevatorService.start();
         consoleService.start();

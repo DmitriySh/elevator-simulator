@@ -6,7 +6,6 @@ import com.google.inject.Singleton;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.shishmakov.config.ElevatorConfig;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,7 +39,7 @@ public class ConsoleService {
     @Inject
     private Provider<Server> serverProvider;
     @Inject
-    private ElevatorConfig config;
+    private Inbound inbound;
 
     private final AtomicBoolean watcherState = new AtomicBoolean(true);
 
@@ -129,13 +128,13 @@ public class ConsoleService {
 
     private boolean isValidateNumber(String source) {
         if (isBlank(source) || !NumberUtils.isCreatable(source)) return false;
-        else return Range.closed(1, config.floorMinMax()[1]).contains(Integer.valueOf(source));
+        else return Range.closed(1, inbound.number).contains(Integer.valueOf(source));
     }
 
     private void printHelp() {
         logger.info(String.format("\t%s - %s%n\t%s%n", "h", "help", "You see current message"));
         logger.info(String.format("\t%s - %s%n\t%s%n", "b",
-                "button [1.." + config.floorMinMax()[1] + "]",
+                "button [1.." + inbound.number + "]",
                 "Press the button to select the floor"));
         logger.info(String.format("\t%s - %s%n\t%s%n", "e",
                 "elevator",

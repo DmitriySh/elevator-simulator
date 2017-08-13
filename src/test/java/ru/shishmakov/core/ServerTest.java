@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import ru.shishmakov.BaseTest;
+import ru.shishmakov.config.ElevatorConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static ru.shishmakov.core.LifeCycle.IDLE;
 import static ru.shishmakov.core.LifeCycle.RUN;
 
@@ -30,6 +33,7 @@ public class ServerTest extends BaseTest {
     @Override
     public void setUp() {
         super.setUp();
+        doNothing().when(inbound).validate(any(ElevatorConfig.class));
     }
 
     @Test
