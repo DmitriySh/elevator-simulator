@@ -24,7 +24,7 @@ import static ru.shishmakov.util.Threads.*;
  * @author Dmitriy Shishmakov on 31.07.17
  */
 @Singleton
-public class ElevatorServer {
+public class Server {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
 
@@ -51,7 +51,7 @@ public class ElevatorServer {
         logger.info("----- // -----    {} STOP {}    ----- // -----\nBuy!", NAME, LocalDateTime.now());
     }
 
-    public ElevatorServer start() {
+    public Server start() {
         logger.info("{} starting...", NAME);
         Thread.currentThread().setName("service-main");
 

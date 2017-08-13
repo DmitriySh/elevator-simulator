@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static ru.shishmakov.core.LifeCycle.IDLE;
 import static ru.shishmakov.core.LifeCycle.RUN;
 
-public class ElevatorServerTest extends BaseTest {
+public class ServerTest extends BaseTest {
 
     @Mock
     private ExecutorService executor;
@@ -25,7 +25,7 @@ public class ElevatorServerTest extends BaseTest {
     private ElevatorService elevatorService;
 
     @InjectMocks
-    private ElevatorServer server;
+    private Server server;
 
     @Override
     public void setUp() {

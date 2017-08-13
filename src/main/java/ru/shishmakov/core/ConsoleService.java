@@ -38,7 +38,7 @@ public class ConsoleService {
     @Named("console.commands")
     private BlockingQueue<Command> consoleCommands;
     @Inject
-    private Provider<ElevatorServer> service;
+    private Provider<Server> serverProvider;
 
     private final AtomicBoolean watcherState = new AtomicBoolean(true);
 
@@ -91,7 +91,7 @@ public class ConsoleService {
                         continue;
                     case "/q":
                     case "/quit":
-                        service.get().stop();
+                        serverProvider.get().stop();
                         break;
                     case "/b":
                     case "/button":
