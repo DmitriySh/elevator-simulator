@@ -1,13 +1,13 @@
 package ru.shishmakov.core;
 
-import com.google.common.collect.Sets;
+import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import ru.shishmakov.BaseTest;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
@@ -55,27 +55,28 @@ public class ServerTest extends BaseTest {
 
     @Test
     public void awaitShouldWaitIdleLifeCycleStateIfServerRun() throws InterruptedException {
-        Set<LifeCycle> states = new HashSet<>();
-        CountDownLatch run = new CountDownLatch(1);
+        List<LifeCycle> states = new ArrayList<>(3);
+        CountDownLatch startLatch = new CountDownLatch(1);
 
         new Thread(() -> {
             try {
-                run.await();
+                startLatch.await();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new RuntimeException("Thread interrupted", e);
             }
 
+            states.add(server.getServiceState().get()); // 2 step
             server.stop();
-        }, "await-thread").start();
+            states.add(server.getServiceState().get()); // 3 step
+        }, "stop-server-thread").start();
 
-        states.add(server.getServiceState().get());
+        states.add(server.getServiceState().get()); // 1 step
         server.start();
-        run.countDown();
+        startLatch.countDown();
 
         server.await();
-        states.add(server.getServiceState().get());
 
-        assertEquals("Should be only Idle state", Sets.newHashSet(IDLE), states);
+        assertEquals("Should be only Idle state", Lists.newArrayList(IDLE, RUN, IDLE), states);
     }
 }
