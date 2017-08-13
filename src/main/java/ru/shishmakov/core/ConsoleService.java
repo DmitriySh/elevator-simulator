@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.shishmakov.config.ElevatorConfig;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -19,7 +20,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.apache.commons.lang3.StringUtils.*;
-import static ru.shishmakov.core.Inbound.FLOORS;
 
 /**
  * @author Dmitriy Shishmakov on 31.07.17
@@ -39,6 +39,8 @@ public class ConsoleService {
     private BlockingQueue<Command> consoleCommands;
     @Inject
     private Provider<Server> serverProvider;
+    @Inject
+    private ElevatorConfig config;
 
     private final AtomicBoolean watcherState = new AtomicBoolean(true);
 
@@ -127,13 +129,13 @@ public class ConsoleService {
 
     private boolean isValidateNumber(String source) {
         if (isBlank(source) || !NumberUtils.isCreatable(source)) return false;
-        else return Range.closed(1, FLOORS.upperEndpoint()).contains(Integer.valueOf(source));
+        else return Range.closed(1, config.floorMinMax()[1]).contains(Integer.valueOf(source));
     }
 
     private void printHelp() {
         logger.info(String.format("\t%s - %s%n\t%s%n", "h", "help", "You see current message"));
         logger.info(String.format("\t%s - %s%n\t%s%n", "b",
-                "button [1.." + FLOORS.upperEndpoint() + "]",
+                "button [1.." + config.floorMinMax()[1] + "]",
                 "Press the button to select the floor"));
         logger.info(String.format("\t%s - %s%n\t%s%n", "e",
                 "elevator",

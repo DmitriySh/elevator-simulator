@@ -39,6 +39,8 @@ public class ElevatorService {
     @Named("console.commands")
     private BlockingQueue<Command> consoleCommands;
     @Inject
+    private Inbound inbound;
+    @Inject
     private ElevatorConfig config;
 
     public void start() {
@@ -62,6 +64,7 @@ public class ElevatorService {
     }
 
     private void startElevator() {
+        inbound.validate(config);
         executor.execute(this::process);
     }
 

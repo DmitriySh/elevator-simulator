@@ -26,7 +26,6 @@ public abstract class ElevatorState {
     protected int floor;
 
     @Inject
-    @Named("elevator.inbound")
     protected Inbound inbound;
     @Inject
     @Named("elevator.commands")

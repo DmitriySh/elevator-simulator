@@ -19,4 +19,20 @@ public interface ElevatorConfig extends Config {
     @DefaultValue("20")
     @Key("queue.readDelay")
     long queueReadDelay();
+
+    @DefaultValue("5, 20")
+    @Key("floor.minMax")
+    int[] floorMinMax();
+
+    @DefaultValue("1, 10")
+    @Key("floor.heights")
+    int[] floorHeights();
+
+    @DefaultValue("1, 10")
+    @Key("elevator.velocities")
+    int[] elevatorVelocities();
+
+    @DefaultValue("2, 20")
+    @Key("door.times")
+    int[] doorTimes();
 }

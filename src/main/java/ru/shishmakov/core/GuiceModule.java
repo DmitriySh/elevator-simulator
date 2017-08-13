@@ -32,7 +32,7 @@ public class GuiceModule extends AbstractModule {
     @Override
     protected void configure() {
         binder().install(new ExtAnnotationsModule());
-        binder().bind(Inbound.class).annotatedWith(Names.named("elevator.inbound")).toInstance(inbound);
+        binder().bind(Inbound.class).toInstance(inbound);
         binder().bind(ElevatorState.class).annotatedWith(Names.named("elevator.startState")).to(IdleState.class);
     }
 
