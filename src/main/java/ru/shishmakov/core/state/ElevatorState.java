@@ -21,16 +21,16 @@ import static java.time.temporal.ChronoUnit.SECONDS;
  * Set of elevator states
  * <p>
  * <pre>
- *                ----------------------------------------------
- *                |                                            ↓
- *            ---------        -----------------         -------------
- *            IdleState   -->  MoveUpOrDownState   -->   StopOpenState
- *            ---------        -----------------         -------------
- *                ↑                    ↑                       ↓
- *                ↑                    ↑                       ↓
- *                ↑                    ↑                  --------------
- *                -------------------  ---------------    StopCloseState
- *                                                        --------------
+ *       ----------------------------------------------
+ *       |                                            ↓
+ *   ---------        -----------------         -------------
+ *   IdleState   -->  MoveUpOrDownState   -->   StopOpenState
+ *   ---------        -----------------         -------------
+ *       ↑                    ↑                       ↓
+ *       ↑                    ↑                       ↓
+ *       ↑                    ↑                  --------------
+ *       -------------------  ---------------    StopCloseState
+ *                                               --------------
  * </pre>
  */
 public abstract class ElevatorState {
