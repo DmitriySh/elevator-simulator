@@ -17,6 +17,22 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
+/**
+ * Set of elevator states
+ * <p>
+ * <pre>
+ *                ----------------------------------------------
+ *                |                                            ↓
+ *            ---------        -----------------         -------------
+ *            IdleState   -->  MoveUpOrDownState   -->   StopOpenState
+ *            ---------        -----------------         -------------
+ *                ↑                    ↑                       ↓
+ *                ↑                    ↑                       ↓
+ *                ↑                    ↑                  --------------
+ *                -------------------  ---------------    StopCloseState
+ *                                                        --------------
+ * </pre>
+ */
 public abstract class ElevatorState {
     protected static final Logger fileLogger = LoggerFactory.getLogger("fileLogger");
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
