@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/DmitriySh/elevator-simulator.svg?branch=master)](https://travis-ci.org/DmitriySh/elevator-simulator)
+
 elevator-simulator
 =======
 
